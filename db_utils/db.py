@@ -1,14 +1,15 @@
 import mysql.connector
 from mysql.connector.errors import Error
 import os
-from datetime import datetime
 import logging as logger
+
 
 host=os.getenv("DB_HOST")
 user=os.getenv("DB_USER")
 password=os.getenv("DB_PASSWORD")
 database=os.getenv("DB_NAME")
 port=os.getenv("DB_PORT")
+
 
 def log_user(user_id, user_email, user_name, user_pic, first_logged_in, last_accessed):
     try:

@@ -1,7 +1,5 @@
 from fastapi import  APIRouter
-import logging
 from fastapi import Depends
-import os
 from datetime import *
 from apis.authentication import get_current_user
 
