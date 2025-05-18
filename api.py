@@ -43,10 +43,10 @@ async def log_response_time(request: Request, call_next):
     return response 
 
 
-app.include_router(chatbot.router, tags=["Chatbot"])
+#app.include_router(chatbot.router, tags=["Chatbot"])
 app.include_router(authentication.router, tags=["Authentication"])
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=3400)

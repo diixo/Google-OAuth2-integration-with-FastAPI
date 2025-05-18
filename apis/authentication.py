@@ -21,6 +21,8 @@ import google.auth.transport.requests
 from google.oauth2.id_token import verify_oauth2_token
 from db_utils.db import log_user, log_token
 import logging as logger
+from fastapi import Depends
+
 
 load_dotenv(override=True)
 
@@ -108,6 +110,9 @@ async def login(request: Request):
     redirect_url = os.getenv("REDIRECT_URL")
     request.session["login_redirect"] = redirect_url
 
+    logger.info(f"Request Session: {FRONTEND_URL}")
+    logger.info(f"Request Session: {redirect_url}")
+
     return await oauth.auth_demo.authorize_redirect(request, FRONTEND_URL, prompt="consent")
 
 
@@ -175,9 +180,15 @@ async def auth(request: Request):
     )
     return response
 
+
 @router.get("/logout")
 async def logout(request: Request):
     request.session.clear()
     response = JSONResponse(content={"message": "Logged out successfully."})
     response.delete_cookie("token")
     return response
+
+
+@router.get("/chat")
+async def get_response(current_user: dict = Depends(get_current_user)):
+    return {"message": "Welcome!", "user": current_user}
