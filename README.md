@@ -47,9 +47,9 @@ JWT_SECRET_KEY = <your-jwt-secret-key>
 
 * Сервер обменивает код на access_token и id_token (в котором есть email, имя и т.п.).
 
-* Сервер сохраняет JWT (или сессию) и кладёт в cookie (token).
+* Сервер сохраняет JWT (или сессию) в БД, и кладёт в cookie (token).
 
-* Возвращать токен, creds в RedirectResponse на адрес, в наше случае полученный от chrome.identity.getRedirectURL("provider_cb") прокинутый через сессию (либо возврат на welcome-страницу, либо на Google redirect_url с токеном)
+* Возвращать токен, creds в RedirectResponse на адрес, в наше случае полученный от **chrome.identity.getRedirectURL("provider_cb")** прокинутый через сессию (либо возврат на welcome-страницу, либо на Google redirect_url с токеном)
 
 
 ## References:
