@@ -19,7 +19,7 @@ from typing import Optional
 from google.oauth2 import service_account
 import google.auth.transport.requests
 from google.oauth2.id_token import verify_oauth2_token
-from db_utils.db import log_user, log_token
+from db_utils.db import log_db_user, log_db_token
 import logging as logger
 from fastapi import Depends
 
@@ -108,12 +108,9 @@ async def login(request: Request):
     referer = request.headers.get("referer")
     FRONTEND_URL = os.getenv("FRONTEND_URL")
     redirect_url = os.getenv("REDIRECT_URL")
-    request.session["login_redirect"] = redirect_url
+    #request.session["login_redirect"] = redirect_url
 
-    logger.info(f"Request Session: {FRONTEND_URL}")
-    logger.info(f"Request Session: {redirect_url}")
-
-    return await oauth.auth_demo.authorize_redirect(request, FRONTEND_URL, prompt="consent")
+    return await oauth.auth_demo.authorize_redirect(request, redirect_url, prompt="consent")
 
 
 @router.route("/auth")
@@ -121,7 +118,6 @@ async def auth(request: Request):
     state_in_request = request.query_params.get("state")
 
     logger.info(f"Request Session: {request.session}")
-
     logger.info(f"Request state (from query params): {state_in_request}")
 
     try:
@@ -164,8 +160,8 @@ async def auth(request: Request):
     access_token = create_access_token(data={"sub": user_id, "email": user_email}, expires_delta=access_token_expires)
 
     session_id = str(uuid.uuid4())
-    log_user(user_id, user_email, user_name, user_pic, first_logged_in, last_accessed)
-    log_token(access_token, user_email, session_id)
+    #log_db_user(user_id, user_email, user_name, user_pic, first_logged_in, last_accessed)
+    #log_db_token(access_token, user_email, session_id)
 
     redirect_url = request.session.pop("login_redirect", "")
     logger.info(f"Redirecting to: {redirect_url}")
@@ -175,7 +171,7 @@ async def auth(request: Request):
         key="token",
         value=access_token,
         httponly=True,
-        secure=True,  # Ensure you're using HTTPS
+        secure=True,        # Ensure you're using HTTPS
         samesite="strict",  # Set the SameSite attribute to None
     )
     return response

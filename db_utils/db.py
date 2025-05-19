@@ -11,7 +11,7 @@ database=os.getenv("DB_NAME")
 port=os.getenv("DB_PORT")
 
 
-def log_user(user_id, user_email, user_name, user_pic, first_logged_in, last_accessed):
+def log_db_user(user_id, user_email, user_name, user_pic, first_logged_in, last_accessed):
     try:
         connection = mysql.connector.connect(host=host, database=database, user=user, password=password)
 
@@ -37,7 +37,8 @@ def log_user(user_id, user_email, user_name, user_pic, first_logged_in, last_acc
             connection.close()
             logger.info("MySQL connection is closed")
 
-def log_token(access_token, user_email, session_id):
+
+def log_db_token(access_token, user_email, session_id):
     try:
         connection = mysql.connector.connect(host=host, database=database, user=user, password=password)
 
