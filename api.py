@@ -43,7 +43,6 @@ async def log_response_time(request: Request, call_next):
     return response 
 
 
-#app.include_router(chatbot.router, tags=["Chatbot"])
 app.include_router(authentication.router, tags=["Authentication"])
 
 
