@@ -15,11 +15,6 @@ import requests
 import uuid
 import os
 from dotenv import load_dotenv
-from pydantic import ValidationError
-from typing import Optional
-from google.oauth2 import service_account
-import google.auth.transport.requests
-from google.oauth2.id_token import verify_oauth2_token
 from db_utils.db import log_db_user, log_db_token
 import logging as logger
 from fastapi import Depends
@@ -108,8 +103,16 @@ async def login(request: Request):
     request.session.clear()
     referer = request.headers.get("referer")
     FRONTEND_URL = os.getenv("FRONTEND_URL")
+    # Получаем redirect_uri от клиента (расширения)
+    redirect_uri = request.query_params.get("redirect_uri")
+    logger.info(f"redirect_uri:{redirect_uri}")
+
+    if not redirect_uri:
+        return {"error": "Missing redirect_uri"}
+
     redirect_url = os.getenv("REDIRECT_URL")
-    #request.session["login_redirect"] = redirect_url
+    # прокидываем redirect_uri через сессию
+    request.session["login_redirect"] = redirect_uri
 
     return await oauth.auth_demo.authorize_redirect(request, redirect_url, prompt="consent")
 
@@ -147,8 +150,8 @@ async def auth(request: Request):
     user_name = user_info.get("name")
     user_pic = user_info.get("picture")
 
-    logger.info(f"User name:{user_name}")
-    logger.info(f"User Email:{user_email}")
+    logger.info(f"User_name:{user_name}")
+    logger.info(f"User_email:{user_email}")
 
     if iss not in ["https://accounts.google.com", "accounts.google.com"]:
         raise HTTPException(status_code=401, detail="Google authentication failed.")
@@ -164,11 +167,18 @@ async def auth(request: Request):
     #log_db_user(user_id, user_email, user_name, user_pic, first_logged_in, last_accessed)
     #log_db_token(access_token, user_email, session_id)
 
-    return RedirectResponse(
-        f"/welcome?name={user_name}&email={user_email}"
-    )
+    ######################### Return to Welcome-page
+    # return RedirectResponse(f"/welcome?name={user_name}&email={user_email}")
 
-    # OR! return by redirect_url
+    ######################### Extract passed chrome.identity.getRedirectURL and return
+    #redirect_uri = request.query_params.get("redirect_uri")
+    redirect_uri = request.session.get("login_redirect")
+    logger.info(f"\n!!!redirect_uri:{redirect_uri}")
+
+    final_url = f"{redirect_uri}?token={access_token}&user={user_name}&email={user_email}"
+    return RedirectResponse(url=final_url)
+
+    ######################### Return by Google redirect_url
     redirect_url = request.session.pop("login_redirect", "")
     logger.info(f"Redirecting to: {redirect_url}")
     response = RedirectResponse(redirect_url)

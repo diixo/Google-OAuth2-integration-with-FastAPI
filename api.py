@@ -1,9 +1,9 @@
 import os
-from fastapi import FastAPI, Header, HTTPException, Depends, Request
+from fastapi import FastAPI, Request
 from starlette.config import Config
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from apis import chatbot, authentication
+from apis import authentication
 import logging as logger
 import time
 
