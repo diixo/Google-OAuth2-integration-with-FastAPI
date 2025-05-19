@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Query
+from fastapi.responses import HTMLResponse
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from fastapi.responses import JSONResponse
@@ -163,6 +164,11 @@ async def auth(request: Request):
     #log_db_user(user_id, user_email, user_name, user_pic, first_logged_in, last_accessed)
     #log_db_token(access_token, user_email, session_id)
 
+    return RedirectResponse(
+        f"/welcome?name={user_name}&email={user_email}"
+    )
+
+    # OR! return by redirect_url
     redirect_url = request.session.pop("login_redirect", "")
     logger.info(f"Redirecting to: {redirect_url}")
     response = RedirectResponse(redirect_url)
@@ -175,6 +181,22 @@ async def auth(request: Request):
         samesite="strict",  # Set the SameSite attribute to None
     )
     return response
+
+
+@router.get("/welcome", response_class=HTMLResponse)
+async def welcome(request: Request):
+    name = request.query_params.get("name")
+    email = request.query_params.get("email")
+
+    return f"""
+    <html>
+        <head><title>Welcome</title></head>
+        <body>
+            <h2>Добро пожаловать, {name}!</h2>
+            <p>Ваша почта: {email}</p>
+        </body>
+    </html>
+    """
 
 
 @router.get("/logout")
