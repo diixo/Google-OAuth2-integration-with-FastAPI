@@ -13,8 +13,9 @@ authlib
 pyjwt
 itsdangerous
 google-auth
+pydantic
+sqlalchemy
 ```
-
 
 
 ### Environments:
