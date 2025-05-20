@@ -1,5 +1,8 @@
 # Google-OAuth2-integration-with-FastAPI
 
+Backend for [chrome-ext](https://github.com/diixo/chrome-ext)
+
+
 ## Requirements:
 
 ```bash
