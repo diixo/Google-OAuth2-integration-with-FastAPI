@@ -1,4 +1,4 @@
-import os
+
 from fastapi import FastAPI, Request
 from starlette.config import Config
 from fastapi.middleware.cors import CORSMiddleware
