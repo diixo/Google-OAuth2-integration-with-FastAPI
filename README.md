@@ -1,4 +1,4 @@
-# Google-OAuth-Integration-with-FastAPI
+# Google-OAuth2-integration-with-FastAPI
 
 ## Requirements:
 
