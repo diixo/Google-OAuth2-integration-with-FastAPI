@@ -57,7 +57,7 @@ JWT_SECRET_KEY = <your-jwt-secret-key>
 
 ## References:
 
-* [integrating-google-authentication-with-fastapi-a-step-by-step-guide](https://blog.futuresmart.ai/integrating-google-authentication-with-fastapi-a-step-by-step-guide) + [Full Code in our GitHub](https://github.com/PradipNichite/FutureSmart-AI-Blog/tree/main/Google%20OAuth%20Integration%20with%20FastAPI)
+* [integrating-google-authentication-with-fastapi-a-step-by-step-guide](https://blog.futuresmart.ai/integrating-google-authentication-with-fastapi-a-step-by-step-guide) + [Full Code in GitHub](https://github.com/PradipNichite/FutureSmart-AI-Blog/tree/main/Google%20OAuth%20Integration%20with%20FastAPI)
 
 
 ## Examples:

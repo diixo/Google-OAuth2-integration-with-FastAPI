@@ -22,7 +22,7 @@ database=os.getenv("DB_NAME")
 port=os.getenv("DB_PORT")
 
 
-def log_db_user(user_id, user_email, user_name, user_pic, first_logged_in, last_accessed):
+def log_db_user(user_id, user_email, user_name, first_logged_in, last_accessed):
     try:
         connection = mysql.connector.connect(host=host, database=database, user=user, password=password)
 
@@ -33,8 +33,8 @@ def log_db_user(user_id, user_email, user_name, user_pic, first_logged_in, last_
             row_count = cursor.fetchone()[0]
 
             if row_count == 0:
-                sql_query = """INSERT INTO users (user_id, email_id,user_name,user_pic,first_logged_in, last_accessed) VALUES (%s, %s, %s, %s, %s, %s)"""
-                cursor.execute(sql_query, (user_id, user_email, user_name, user_pic, first_logged_in, last_accessed))
+                sql_query = """INSERT INTO users (user_id, email_id, user_name, first_logged_in, last_accessed) VALUES (%s, %s, %s, %s, %s)"""
+                cursor.execute(sql_query, (user_id, user_email, user_name, first_logged_in, last_accessed))
 
             # Commit changes
             connection.commit()
