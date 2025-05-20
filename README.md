@@ -17,6 +17,10 @@ pydantic
 sqlalchemy
 ```
 
+Dependency on httpx>=0.23:
+```bash
+pip install httpx==0.27.2
+```
 
 ### Environments:
 
