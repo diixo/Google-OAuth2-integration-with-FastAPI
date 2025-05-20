@@ -2,6 +2,17 @@ import mysql.connector
 from mysql.connector.errors import Error
 import os
 import logging as logger
+import uuid
+
+# mysql DB support
+from pydantic import BaseModel
+from typing import List
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Index
+from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, text
+############
+
 
 
 host=os.getenv("DB_HOST")
@@ -38,7 +49,8 @@ def log_db_user(user_id, user_email, user_name, user_pic, first_logged_in, last_
             logger.info("MySQL connection is closed")
 
 
-def log_db_token(access_token, user_email, session_id):
+def log_db_token(access_token, user_email):
+    session_id = str(uuid.uuid4())
     try:
         connection = mysql.connector.connect(host=host, database=database, user=user, password=password)
 

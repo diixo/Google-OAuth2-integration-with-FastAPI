@@ -12,7 +12,6 @@ from fastapi.responses import JSONResponse
 from jose import JWTError, jwt, ExpiredSignatureError, JWTError
 import traceback
 import requests
-import uuid
 import os
 from dotenv import load_dotenv
 from db_utils.db import log_db_user, log_db_token
@@ -163,9 +162,8 @@ async def auth(request: Request):
     access_token_expires = timedelta(seconds=expires_in)
     access_token = create_access_token(data={"sub": user_id, "email": user_email}, expires_delta=access_token_expires)
 
-    session_id = str(uuid.uuid4())
     #log_db_user(user_id, user_email, user_name, user_pic, first_logged_in, last_accessed)
-    #log_db_token(access_token, user_email, session_id)
+    #log_db_token(access_token, user_email)
 
     ######################### Return to Welcome-page
     # return RedirectResponse(f"/welcome?name={user_name}&email={user_email}")
