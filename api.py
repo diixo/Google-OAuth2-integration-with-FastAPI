@@ -14,14 +14,18 @@ load_dotenv(override=True)
 config = Config(".env")
 
 
-expected_api_secret = os.getenv("FASTAPI_SECRET_KEY")
-
 app = FastAPI()
 
+allowed_origins = [
+    "http://localhost:3400",
+    "http://127.0.0.1:3400",
+    "null",
+    "chrome-extension://<YOUR_EXTENSION_ID>",
+],
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # or specify allowed origins
+    allow_origins=["*"],  # or specify by allowed_origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
