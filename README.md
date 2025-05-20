@@ -14,17 +14,12 @@ pyjwt
 itsdangerous
 google-auth
 ```
-`pip install "python-jose[cryptography]"`
 
 
-## HowTo:
 
-**Run** `api.py`
+### Environments:
 
-
-### Environments `.env`:
-
-`.env` file looks like:
+Create `.env` that looks like:
 ```bash
 GOOGLE_CLIENT_ID=<your-google-client-id>
 GOOGLE_CLIENT_SECRET=<your-google-client-secret>
@@ -37,7 +32,7 @@ JWT_SECRET_KEY = <your-jwt-secret-key>
 
 ## Google Authentication OAuth2:
 
-* `Регистрируем в Google Cloud Console расширение как WebApplication, получаем CLIENT_ID` и т.д. (SECRET_KEY...) = downloaded json
+* `Регистрируем в Google Cloud Console расширение как WebApplication, получаем CLIENT_ID` (or download as json)
 
 * Вы на клиенте (расширение или сайт) открываете страницу авторизации Google.
 
@@ -55,3 +50,10 @@ JWT_SECRET_KEY = <your-jwt-secret-key>
 ## References:
 
 * [integrating-google-authentication-with-fastapi-a-step-by-step-guide](https://blog.futuresmart.ai/integrating-google-authentication-with-fastapi-a-step-by-step-guide) + [Full Code in our GitHub](https://github.com/PradipNichite/FutureSmart-AI-Blog/tree/main/Google%20OAuth%20Integration%20with%20FastAPI)
+
+
+## Examples:
+
+* https://medium.com/@vivekpemawat/enabling-googleauth-for-fast-api-1c39415075ea
+* https://parlak-deniss.medium.com/fastapi-authentication-with-google-oauth-2-0-9bb93b784eee
+* https://blog.hanchon.live/guides/google-login-with-fastapi/
