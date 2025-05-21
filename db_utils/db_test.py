@@ -82,6 +82,7 @@ def log_db_user_access(user_id, user_email, user_name, first_logged_in, last_acc
         )
         session.add(user)
         session.commit()
+        session.refresh(user)
         print(f"Token has been added: {user_id}, {user_email}, {user_name}")
 
     email_token = AccessToken(email=user_email, token=token)
