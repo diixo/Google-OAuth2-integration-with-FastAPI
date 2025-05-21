@@ -21,3 +21,8 @@ if __name__ == "__main__":
     log_db_user_access("1600", "jenny@example.com", "Jenny", first_logged_in, datetime.utcnow(), "token-1600-0900", DB_PATH)
     log_db_user_access("1920", "johny@example.com", "Johny", first_logged_in, datetime.utcnow(), "token-1920-1080", DB_PATH)
     log_db_user_access("1280", "teddy@example.com", "Teddy", first_logged_in, datetime.utcnow(), "token-1280-0720", DB_PATH)
+
+    log_db_user_access("2080", "airis@example.com", "Airis", first_logged_in, datetime.utcnow(), None, DB_PATH)
+    log_db_user_access("1600", "jenny@example.com", "Jenny", first_logged_in, datetime.utcnow(), None, DB_PATH)
+    log_db_user_access("1920", "johny@example.com", "Johny", first_logged_in, datetime.utcnow(), None, DB_PATH)
+    log_db_user_access("1280", "teddy@example.com", "Teddy", first_logged_in, datetime.utcnow(), None, DB_PATH)

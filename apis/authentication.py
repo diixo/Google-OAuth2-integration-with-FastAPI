@@ -14,10 +14,12 @@ import traceback
 import requests
 import os
 from dotenv import load_dotenv
-from db_utils.db import log_db_user, log_db_token
+from db_utils.db import log_db_user_access
 import logging as logger
 from fastapi import Depends
 
+
+DB_PATH = "db-storage/access.db"
 
 load_dotenv(override=True)
 
@@ -140,6 +142,7 @@ async def auth(request: Request):
 
     user = token.get("userinfo")
     expires_in = token.get("expires_in")
+    # user_id always the same for the same user within the same project (client_ID) in Google-API
     user_id = user.get("sub")
     iss = user.get("iss")
     user_email = user.get("email")
@@ -162,6 +165,9 @@ async def auth(request: Request):
     #log_db_user(user_id, user_email, user_name, first_logged_in, last_accessed)
     #log_db_token(access_token, user_email)
 
+    if log_db_user_access(user_id, user_email, user_name, first_logged_in, last_accessed, None, DB_PATH) == None:
+        raise HTTPException(status_code=401, detail="Google authentication failed (wrong user_id).")
+
     ######################### Return to Welcome-page
     # return RedirectResponse(f"/welcome?name={user_name}&email={user_email}")
 
@@ -169,9 +175,9 @@ async def auth(request: Request):
     #redirect_uri = request.query_params.get("redirect_uri")
     redirect_uri = request.session.get("login_redirect")
 
-    logger.info(f"User_name:{user_name}")
-    logger.info(f"User_email:{user_email}")
-    logger.info(f"User_id:{user_id}, redirect_uri:{redirect_uri}")
+    logger.info(f"User_name: {user_name}")
+    logger.info(f"User_email: {user_email}")
+    logger.info(f"User_id: {user_id}, redirect_uri: {redirect_uri}")
 
     final_url = f"{redirect_uri}?token={access_token}&user={user_name}&email={user_email}"
     return RedirectResponse(url=final_url)
@@ -215,6 +221,6 @@ async def logout(request: Request):
     return response
 
 
-@router.get("/chat")
+@router.get("/aiveex")
 async def get_response(current_user: dict = Depends(get_current_user)):
     return {"message": "Welcome!", "user": current_user}

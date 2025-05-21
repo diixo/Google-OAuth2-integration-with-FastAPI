@@ -107,7 +107,7 @@ class User(Base):
 class AccessToken(Base):
     __tablename__ = "access_tokens"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String, ForeignKey('users.email'), nullable=False)
     token = Column(Text, nullable=False)
 
@@ -153,11 +153,15 @@ def log_db_user_access(user_id, user_email, user_name, first_logged_in, last_acc
         logger.info(f"Token has been added: {user_id}, {user_email}, {user_name}")
     else:
         logger.info(f"User: {user.email}, id:{user.user_id}")
+        if (user_id != user.user_id): return None
 
     session_id = str(uuid.uuid4())  # TODO:
-    email_token = AccessToken(email=user_email, token=token)    # session_id
-    session.add(email_token)
-    session.commit()
+
+    if token is not None:
+        email_token = AccessToken(email=user_email, token=token)
+        session.add(email_token)
+        session.commit()
+        logger.info(f"Token has been added: {user_email}, {token}")
+
     session.close()
-    logger.info(f"Token has been added: {user_email}, {token}")
     return user_id
