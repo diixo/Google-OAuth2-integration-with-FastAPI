@@ -125,7 +125,7 @@ def init_db(db_path):
         Base.metadata.create_all(bind=engine)
         logger.info("DB has been created")
     else:
-        logger.info("DB exists")
+        logger.info(f"DB exists: {db_path}")
 
 
 def log_db_user_access(user_id, user_email, user_name, first_logged_in, last_accessed, token, db_path):
@@ -151,6 +151,7 @@ def log_db_user_access(user_id, user_email, user_name, first_logged_in, last_acc
         session.commit()
         session.refresh(user)
         logger.info(f"Token has been added: {user_id}, {user_email}, {user_name}")
+    else: logger.info(f"User: {user.email}, id={user.user_id}")
 
     session_id = str(uuid.uuid4())  # TODO:
     email_token = AccessToken(email=user_email, token=token)    # session_id
