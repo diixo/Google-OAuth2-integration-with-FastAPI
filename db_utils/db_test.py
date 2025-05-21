@@ -21,7 +21,7 @@ Base = declarative_base()
 
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(String, unique=True, nullable=False)
@@ -38,7 +38,7 @@ class User(Base):
 
 
 class AccessToken(Base):
-    __tablename__ = 'access_tokens'
+    __tablename__ = "access_tokens"
 
     id = Column(Integer, primary_key=True)
     email = Column(String, ForeignKey('users.email'), nullable=False)
@@ -87,11 +87,13 @@ def log_db_user_access(user_id, user_email, user_name, first_logged_in, last_acc
     email_token = AccessToken(email=user_email, token=token)
     session.add(email_token)
     session.commit()
+    session.close()
     print(f"Token has been added: email={user_email}, token={token}")
 
 
 
 if __name__ == "__main__":
+    print(64*"=")
 
     first_logged_in=datetime.utcnow() - timedelta(hours=1)
 
