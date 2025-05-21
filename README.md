@@ -6,18 +6,17 @@ Backend for [chrome-ext](https://github.com/diixo/chrome-ext)
 ## Requirements:
 
 ```bash
-python-dotenv
-mysql-connector-python
-requests
-fastapi
-uvicorn
-python-jose[cryptography]
 authlib
-pyjwt
-itsdangerous
+fastapi
 google-auth
-pydantic
+itsdangerous
+mysql-connector-python
+pyjwt
+python-jose[cryptography]
+python-dotenv
+requests
 sqlalchemy
+uvicorn
 ```
 
 Dependency on httpx>=0.23:
