@@ -19,7 +19,7 @@ import logging as logger
 from fastapi import Depends
 
 
-DB_PATH = "db-storage/access.db"
+DB_PATH = "datastorage/access.db"
 
 load_dotenv(override=True)
 

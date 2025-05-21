@@ -9,7 +9,7 @@ logging.basicConfig(
 )
 
 
-DB_PATH = "db-storage/access-test.db"
+DB_PATH = "datastorage/access-test.db"
 
 
 if __name__ == "__main__":
