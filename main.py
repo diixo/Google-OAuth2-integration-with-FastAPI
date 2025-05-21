@@ -8,13 +8,18 @@ from apis import authentication
 import logging
 import logging as logger
 import time
-
-
 from dotenv import load_dotenv
+
+
+logging.basicConfig(
+    level=logging.INFO,  # Set the default logging level (e.g., DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log message format
+)
+
+
 load_dotenv(override=True)
 
 config = Config(".env")
-
 
 app = FastAPI()
 
@@ -34,10 +39,8 @@ app.add_middleware(
     expose_headers=["*"]
 )
 
-
 # Add Session middleware
 app.add_middleware(SessionMiddleware, secret_key=config("SECRET_KEY"))
-
 
 # # Logging time taken for each api request
 @app.middleware("http")
@@ -48,13 +51,7 @@ async def log_response_time(request: Request, call_next):
     logger.info(f"Request: {request.url.path} completed in {process_time:.4f} seconds")
     return response 
 
-
 app.include_router(authentication.router, tags=["Authentication"])
-
-logging.basicConfig(
-    level=logging.INFO,  # Set the default logging level (e.g., DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log message format
-)
 
 
 if __name__ == "__main__":
