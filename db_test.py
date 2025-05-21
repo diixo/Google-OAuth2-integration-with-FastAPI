@@ -1,96 +1,15 @@
-
-import os
+import logging
 from datetime import datetime, timedelta
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
-from sqlalchemy import (
-    create_engine,
-    Column,
-    Integer,
-    String,
-    DateTime,
-    ForeignKey,
-    Text,
-    Index
+from db_utils.db import log_db_user_access
+
+
+logging.basicConfig(
+    level=logging.INFO,  # Set the default logging level (e.g., DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log message format
 )
 
 
 DB_PATH = "db-storage/access-test.db"
-
-Base = declarative_base()
-
-
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(String, unique=True, nullable=False)
-    user_name = Column(String)
-    email = Column(String, unique=True, nullable=False)
-    first_logged_in = Column(DateTime, default=datetime.utcnow)
-    last_accessed = Column(DateTime, default=datetime.utcnow)
-
-    tokens = relationship("AccessToken", back_populates="user", cascade="all, delete")
-
-    __table_args__ = (
-        Index("ix_users_email", "email", unique=True),
-    )
-
-
-class AccessToken(Base):
-    __tablename__ = "access_tokens"
-
-    id = Column(Integer, primary_key=True)
-    email = Column(String, ForeignKey('users.email'), nullable=False)
-    token = Column(Text, nullable=False)
-
-    user = relationship("User", back_populates="tokens")
-
-    __table_args__ = (
-        Index("ix_access_tokens_email", "email"),
-    )
-
-
-def init_db(db_path):
-    if not os.path.exists(db_path):
-        DATABASE_URL = f"sqlite:///{db_path}"
-        engine = create_engine(DATABASE_URL)
-        Base.metadata.create_all(bind=engine)
-        print("DB has been created")
-    else:
-        print("DB exists")
-
-
-def log_db_user_access(user_id, user_email, user_name, first_logged_in, last_accessed, token, db_path):
-
-    init_db(db_path)
-
-    DATABASE_URL = f"sqlite:///{db_path}"
-
-    engine = create_engine(DATABASE_URL, echo=False)
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    session = SessionLocal()
-    user = session.query(User).filter_by(email=user_email).first()
-
-    if not user:
-        user = User(
-            user_id=user_id,
-            email=user_email,
-            user_name=user_name,
-            first_logged_in=first_logged_in,
-            last_accessed=last_accessed
-        )
-        session.add(user)
-        session.commit()
-        session.refresh(user)
-        print(f"Token has been added: {user_id}, {user_email}, {user_name}")
-
-    email_token = AccessToken(email=user_email, token=token)
-    session.add(email_token)
-    session.commit()
-    session.close()
-    print(f"Token has been added: email={user_email}, token={token}")
-
 
 
 if __name__ == "__main__":
