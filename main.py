@@ -13,19 +13,21 @@ from dotenv import load_dotenv
 
 logging.basicConfig(
     level=logging.INFO,  # Set the default logging level (e.g., DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log message format
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
 )
 
 
 load_dotenv(override=True)
 
 config = Config(".env")
+API_PORT = config.get("API_PORT", default="3400")
+
 
 app = FastAPI()
 
 allowed_origins = [
-    "http://localhost:3400",
-    "http://127.0.0.1:3400",
+    f"http://localhost:{API_PORT}",
+    f"http://127.0.0.1:{API_PORT}",
     "null",
     "chrome-extension://<YOUR_EXTENSION_ID>",
 ],
@@ -56,4 +58,4 @@ app.include_router(authentication.router, tags=["Authentication"])
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=3400)
+    uvicorn.run(app, host="0.0.0.0", port=int(API_PORT))
