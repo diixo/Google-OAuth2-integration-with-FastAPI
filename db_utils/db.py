@@ -151,12 +151,13 @@ def log_db_user_access(user_id, user_email, user_name, first_logged_in, last_acc
         session.commit()
         session.refresh(user)
         logger.info(f"Token has been added: {user_id}, {user_email}, {user_name}")
-    else: logger.info(f"User: {user.email}, id={user.user_id}")
+    else:
+        logger.info(f"User: {user.email}, id:{user.user_id}")
 
     session_id = str(uuid.uuid4())  # TODO:
     email_token = AccessToken(email=user_email, token=token)    # session_id
     session.add(email_token)
     session.commit()
     session.close()
-    logger.info(f"Token has been added: email={user_email}, token={token}")
+    logger.info(f"Token has been added: {user_email}, {token}")
     return user_id
