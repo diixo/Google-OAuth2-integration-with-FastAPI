@@ -15,7 +15,7 @@ from sqlalchemy import (
 )
 
 
-DB_NAME = "db-storage/access-test.db"
+DB_PATH = "db-storage/access-test.db"
 
 Base = declarative_base()
 
@@ -51,9 +51,9 @@ class AccessToken(Base):
     )
 
 
-def init_db(db_name):
-    if not os.path.exists(db_name):
-        DATABASE_URL = f"sqlite:///{db_name}"
+def init_db(db_path):
+    if not os.path.exists(db_path):
+        DATABASE_URL = f"sqlite:///{db_path}"
         engine = create_engine(DATABASE_URL)
         Base.metadata.create_all(bind=engine)
         print("DB has been created")
@@ -61,11 +61,11 @@ def init_db(db_name):
         print("DB exists")
 
 
-def log_db_user_access(user_id, user_email, user_name, first_logged_in, last_accessed, token, db_name=DB_NAME):
+def log_db_user_access(user_id, user_email, user_name, first_logged_in, last_accessed, token, db_path):
 
-    init_db(db_name)
+    init_db(db_path)
 
-    DATABASE_URL = f"sqlite:///{db_name}"
+    DATABASE_URL = f"sqlite:///{db_path}"
 
     engine = create_engine(DATABASE_URL, echo=False)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
     first_logged_in=datetime.utcnow() - timedelta(hours=1)
 
-    log_db_user_access("2080", "airis@example.com", "Airis", first_logged_in, datetime.utcnow(), "token-2080-1170")
-    log_db_user_access("1600", "jenny@example.com", "Jenny", first_logged_in, datetime.utcnow(), "token-1600-0900")
-    log_db_user_access("1920", "johny@example.com", "Johny", first_logged_in, datetime.utcnow(), "token-1920-1080")
-    log_db_user_access("1280", "teddy@example.com", "Teddy", first_logged_in, datetime.utcnow(), "token-1280-0720")
+    log_db_user_access("2080", "airis@example.com", "Airis", first_logged_in, datetime.utcnow(), "token-2080-1170", DB_PATH)
+    log_db_user_access("1600", "jenny@example.com", "Jenny", first_logged_in, datetime.utcnow(), "token-1600-0900", DB_PATH)
+    log_db_user_access("1920", "johny@example.com", "Johny", first_logged_in, datetime.utcnow(), "token-1920-1080", DB_PATH)
+    log_db_user_access("1280", "teddy@example.com", "Teddy", first_logged_in, datetime.utcnow(), "token-1280-0720", DB_PATH)
