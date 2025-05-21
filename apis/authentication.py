@@ -149,9 +149,6 @@ async def auth(request: Request):
     user_name = user_info.get("name")
     #user_pic = user_info.get("picture")
 
-    logger.info(f"User_name:{user_name}")
-    logger.info(f"User_email:{user_email}")
-
     if iss not in ["https://accounts.google.com", "accounts.google.com"]:
         raise HTTPException(status_code=401, detail="Google authentication failed.")
 
@@ -171,7 +168,10 @@ async def auth(request: Request):
     ######################### Extract passed chrome.identity.getRedirectURL and return
     #redirect_uri = request.query_params.get("redirect_uri")
     redirect_uri = request.session.get("login_redirect")
-    logger.info(f"\n!!!redirect_uri:{redirect_uri}")
+
+    logger.info(f"User_name:{user_name}")
+    logger.info(f"User_email:{user_email}")
+    logger.info(f"User_id:{user_id}, redirect_uri:{redirect_uri}")
 
     final_url = f"{redirect_uri}?token={access_token}&user={user_name}&email={user_email}"
     return RedirectResponse(url=final_url)

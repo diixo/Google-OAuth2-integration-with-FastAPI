@@ -4,6 +4,8 @@ from starlette.config import Config
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from apis import authentication
+
+import logging
 import logging as logger
 import time
 
@@ -48,6 +50,11 @@ async def log_response_time(request: Request, call_next):
 
 
 app.include_router(authentication.router, tags=["Authentication"])
+
+logging.basicConfig(
+    level=logging.INFO,  # Set the default logging level (e.g., DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log message format
+)
 
 
 if __name__ == "__main__":
