@@ -1,14 +1,13 @@
-
-from fastapi import FastAPI, Request
-from starlette.config import Config
-from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.sessions import SessionMiddleware
-from apis import authentication
-
 import logging
 import logging as logger
 import time
 from dotenv import load_dotenv
+
+from starlette.config import Config
+from starlette.middleware.sessions import SessionMiddleware
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from apis import authentication
 
 
 logging.basicConfig(
