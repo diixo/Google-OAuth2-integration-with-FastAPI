@@ -21,7 +21,20 @@ uvicorn
 Dependency on httpx>=0.23:
 ```bash
 pip install httpx==0.27.2
+pip install pydantic==1.10.22
 ```
+
+Check:
+```bash
+pip install sqlalchemy==2.0.24
+pip install fastapi==0.103.2
+```
+
+Check:
+```bash
+pip install pydantic==1.10.22
+```
+
 
 ### Environments:
 

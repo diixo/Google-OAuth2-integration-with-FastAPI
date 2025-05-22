@@ -19,7 +19,7 @@ logging.basicConfig(
 load_dotenv(override=True)
 
 config = Config(".env")
-API_PORT = config.get("API_PORT", default="3400")
+API_PORT = config.get("API_PORT", default="8001")
 
 allowed_origins = [
     f"http://localhost:{API_PORT}",
@@ -58,4 +58,8 @@ async def log_response_time(request: Request, call_next):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=int(API_PORT))
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=int(API_PORT)
+    )
