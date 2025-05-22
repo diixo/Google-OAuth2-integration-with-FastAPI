@@ -10,7 +10,6 @@ authlib
 fastapi
 google-auth
 itsdangerous
-mysql-connector-python
 pyjwt
 python-jose[cryptography]
 python-dotenv

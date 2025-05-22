@@ -22,15 +22,15 @@ load_dotenv(override=True)
 config = Config(".env")
 API_PORT = config.get("API_PORT", default="3400")
 
-
-app = FastAPI()
-
 allowed_origins = [
     f"http://localhost:{API_PORT}",
     f"http://127.0.0.1:{API_PORT}",
     "null",
     "chrome-extension://<YOUR_EXTENSION_ID>",
-],
+]
+
+
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 app.add_middleware(
     CORSMiddleware,
@@ -44,7 +44,10 @@ app.add_middleware(
 # Add Session middleware
 app.add_middleware(SessionMiddleware, secret_key=config("SECRET_KEY"))
 
-# # Logging time taken for each api request
+app.include_router(authentication.router, tags=["Authentication"])
+
+
+# Logging time taken for each api request
 @app.middleware("http")
 async def log_response_time(request: Request, call_next):
     start_time = time.time()
@@ -52,8 +55,6 @@ async def log_response_time(request: Request, call_next):
     process_time = time.time() - start_time
     logger.info(f"Request: {request.url.path} completed in {process_time:.4f} seconds")
     return response 
-
-app.include_router(authentication.router, tags=["Authentication"])
 
 
 if __name__ == "__main__":
