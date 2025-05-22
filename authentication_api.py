@@ -14,7 +14,7 @@ import traceback
 import requests
 import os
 from dotenv import load_dotenv
-from db_utils.db import log_db_user_access
+from server.authentication_db import log_db_user_access
 import logging as logger
 from fastapi import Depends
 

@@ -7,7 +7,7 @@ from starlette.config import Config
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from apis import authentication
+import authentication_api
 
 
 logging.basicConfig(
@@ -43,7 +43,7 @@ app.add_middleware(
 # Add Session middleware
 app.add_middleware(SessionMiddleware, secret_key=config("SECRET_KEY"))
 
-app.include_router(authentication.router, tags=["Authentication"])
+app.include_router(authentication_api.router, tags=["Authentication"])
 
 
 # Logging time taken for each api request
