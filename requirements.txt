@@ -1,11 +1,78 @@
-authlib==1.5.2
-fastapi==0.115.12
-google-auth==2.23.3
-itsdangerous==2.2.0
-pyjwt==2.9.0
-python-dotenv==1.0.1
+-i https://pypi.org/simple
+absl-py==2.2.2; python_version >= '3.8'
+anyio==3.7.1; python_version >= '3.7'
+asgiref==3.8.1; python_version >= '3.8'
+astunparse==1.6.3
+authlib==1.5.2; python_version >= '3.9'
+beautifulsoup4==4.13.4; python_full_version >= '3.7.0'
+cachetools==5.5.2; python_version >= '3.7'
+certifi==2025.4.26; python_version >= '3.6'
+cffi==1.17.1; platform_python_implementation != 'PyPy'
+charset-normalizer==3.4.2; python_version >= '3.7'
+click==8.2.1; python_version >= '3.10'
+colorama==0.4.6; platform_system == 'Windows'
+cryptography==45.0.2; python_version >= '3.7' and python_full_version not in '3.9.0, 3.9.1'
+django==5.2.1; python_version >= '3.10'
+django-environ==0.12.0; python_version >= '3.9' and python_version < '4'
+ecdsa==0.19.1; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'
+exceptiongroup==1.2.2; python_version < '3.11'
+faiss-cpu==1.8.0; python_version >= '3.8'
+fastapi==0.103.2; python_version >= '3.7'
+flatbuffers==25.2.10
+gast==0.4.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+google-auth==2.40.2; python_version >= '3.7'
+google-auth-oauthlib==1.0.0; python_version >= '3.6'
+google-pasta==0.2.0
+greenlet==3.2.2; platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32')))))
+grpcio==1.71.0; python_version >= '3.9'
+h11==0.16.0; python_version >= '3.8'
+h5py==3.13.0; python_version >= '3.9'
+httpcore==1.0.9; python_version >= '3.8'
+httpx==0.28.1; python_version >= '3.8'
+idna==3.10; python_version >= '3.6'
+itsdangerous==2.2.0; python_version >= '3.8'
+joblib==1.5.0; python_version >= '3.9'
+keras==2.13.1; python_version >= '3.8'
+libclang==18.1.1
+markdown==3.8; python_version >= '3.9'
+markupsafe==3.0.2; python_version >= '3.9'
+numpy==1.24.3; python_version >= '3.8'
+oauthlib==3.2.2; python_version >= '3.6'
+opt-einsum==3.4.0; python_version >= '3.8'
+packaging==25.0; python_version >= '3.8'
+path==17.1.0; python_version >= '3.9'
+protobuf==4.25.7; python_version >= '3.8'
+pyasn1==0.4.8; python_version >= '3.8'
+pyasn1-modules==0.4.1; python_version >= '3.8'
+pycparser==2.22; python_version >= '3.8'
+pydantic==1.10.22; python_version >= '3.7'
+pyjwt==2.10.1; python_version >= '3.9'
+python-dotenv==1.1.0; python_version >= '3.9'
 python-jose[cryptography]==3.4.0
-requests==2.32.3
-sqlalchemy==2.0.30
-uvicorn==0.29.0
-httpx==0.27.2
+requests==2.32.3; python_version >= '3.8'
+requests-oauthlib==2.0.0; python_version >= '3.4'
+rsa==4.9.1; python_version >= '3.6' and python_version < '4'
+scikit-learn==1.6.1; python_version >= '3.9'
+scipy==1.15.3; python_version >= '3.10'
+setuptools==80.8.0; python_version >= '3.9'
+six==1.17.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+sniffio==1.3.1; python_version >= '3.7'
+soupsieve==2.7; python_version >= '3.8'
+sqlalchemy==2.0.24; python_version >= '3.7'
+sqlparse==0.5.3; python_version >= '3.8'
+starlette==0.27.0; python_version >= '3.7'
+tensorboard==2.13.0; python_version >= '3.8'
+tensorboard-data-server==0.7.2; python_version >= '3.7'
+tensorflow==2.13.0; python_version >= '3.8'
+tensorflow-estimator==2.13.0; python_version >= '3.7'
+tensorflow-intel==2.13.0; platform_system == 'Windows'
+tensorflow-io-gcs-filesystem==0.31.0; platform_machine != 'arm64' or platform_system != 'Darwin'
+termcolor==3.1.0; python_version >= '3.9'
+threadpoolctl==3.6.0; python_version >= '3.9'
+typing-extensions==4.5.0; python_version >= '3.7'
+tzdata==2025.2; sys_platform == 'win32'
+urllib3==2.4.0; python_version >= '3.9'
+uvicorn==0.34.2; python_version >= '3.9'
+werkzeug==3.1.3; python_version >= '3.9'
+wheel==0.45.1; python_version >= '3.8'
+wrapt==1.17.2; python_version >= '3.8'

@@ -1,0 +1,32 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+numpy = "==1.24.3"
+scikit-learn = "==1.6.1"
+path = "==17.1.0"
+python-dotenv = "==1.1.0"
+urllib3 = "==2.4.0"
+beautifulsoup4 = "==4.13.4"
+sqlalchemy = "==2.0.24"
+django = "==5.2.1"
+django-environ = "==0.12.0"
+fastapi = "==0.103.2"
+uvicorn = "==0.34.2"
+tensorflow = "==2.13.0"
+keras = "==2.13.1"
+faiss-cpu = "==1.8.0"
+authlib = "==1.5.2"
+google-auth = "==2.40.2"
+pyjwt = "==2.10.1"
+itsdangerous = "==2.2.0"
+python-jose = {extras = ["cryptography"], version = "==3.4.0"}
+httpx = "==0.28.1"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
+python_full_version = "3.10.8"
