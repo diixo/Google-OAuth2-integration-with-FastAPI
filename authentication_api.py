@@ -27,6 +27,7 @@ router = APIRouter()
 
 # Load configurations
 config = Config(".env")
+API_PORT = config.get("API_PORT", default="8001")
 
 # Setup OAuth2
 oauth = OAuth()
@@ -41,7 +42,7 @@ oauth.register(
     access_token_params=None,
     refresh_token_url=None,
     authorize_state=config("SECRET_KEY"),
-    redirect_uri="http://127.0.0.1:8000/auth",
+    redirect_uri=f"http://127.0.0.1:{API_PORT}/auth",
     jwks_uri="https://www.googleapis.com/oauth2/v3/certs",
     client_kwargs={"scope": "openid profile email"},
 )
