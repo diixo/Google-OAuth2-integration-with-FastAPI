@@ -7,7 +7,7 @@ from starlette.config import Config
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-import authentication_api
+from server import authentication_api
 
 
 logging.basicConfig(
@@ -18,7 +18,7 @@ logging.basicConfig(
 
 load_dotenv(override=True)
 
-config = Config(".env")
+config = Config("server/.env")
 API_PORT = config.get("API_PORT", default="8001")
 
 allowed_origins = [

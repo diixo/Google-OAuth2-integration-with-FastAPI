@@ -26,7 +26,7 @@ load_dotenv(override=True)
 router = APIRouter()
 
 # Load configurations
-config = Config(".env")
+config = Config("server/.env")
 API_PORT = config.get("API_PORT", default="8001")
 
 # Setup OAuth2
