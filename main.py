@@ -24,8 +24,8 @@ API_PORT = config.get("API_PORT", default="8001")
 allowed_origins = [
     f"http://localhost:{API_PORT}",
     f"http://127.0.0.1:{API_PORT}",
-    "null",
-    "chrome-extension://<YOUR_EXTENSION_ID>",
+    f"https://viix.co",
+    "chrome-extension://liefnpejhcabdhpfapmmngaabjioelja",
 ]
 
 
@@ -33,7 +33,7 @@ app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # or specify by allowed_origins
+    allow_origins=allowed_origins,  # or specify by allowed_origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
