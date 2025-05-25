@@ -43,8 +43,8 @@ Create `.env` that looks like:
 GOOGLE_CLIENT_ID=<your-google-client-id>
 GOOGLE_CLIENT_SECRET=<your-google-client-secret>
 SECRET_KEY = "web-app-secret-key"
-REDIRECT_URL = "http://127.0.0.1:3400/auth"
-FRONTEND_URL = "http://127.0.0.1:3400/auth"
+REDIRECT_URL = "http://127.0.0.1:8001/auth"
+FRONTEND_URL = "http://127.0.0.1:8001/auth"
 JWT_SECRET_KEY = <your-jwt-secret-key>
 ```
 
