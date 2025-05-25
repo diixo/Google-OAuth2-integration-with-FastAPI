@@ -66,6 +66,50 @@ JWT_SECRET_KEY = <your-jwt-secret-key>
 * Возвращать токен, creds в RedirectResponse на адрес, в наше случае полученный от **chrome.identity.getRedirectURL("provider_cb")** прокинутый через сессию (либо возврат на welcome-страницу, либо на Google redirect_url с токеном)
 
 
+## Routing of Working process
+
+#### 1. Генерируем JWT-токен при авторизации
+В момент успешной авторизации, например через Google OAuth:
+
+* создаём **JWT-токен с помощью jwt.encode(...)**
+
+* отдаём его клиенту через Response
+
+
+#### 2. Запросы на fastAPI
+Когда браузерное расширение делает запросы к серверу (например, **fetch('/save-selection')**), скрипт автоматически прикрепляет к этим запросам token, используя `headers`
+
+* Извлекается сохранённый токен, полученный от сервера
+
+* Предварительно проверяется `expiresAt` перед отправкой
+```javascript
+method: 'POST',
+headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${stored.token}`,
+}
+```
+
+
+#### 3. Проверка и валидация
+
+* Сервер валидирует токен
+
+Пример на fastAPI эндпоинте:
+```python
+@app.post("/save-selection")
+async def save_selection(data: SelectionData, current_user: dict = Depends(get_current_user)):
+```
+
+* берёт token из хэдера (можно из куки) - с помощью get_current_user_header (get_current_user версия для куки)
+
+* декодирует его через jwt.decode(...)
+
+* извлекает user_id, email и т.д.
+
+* если всё ок — передаёт эти данные в эндпоинт
+
+
 ## References:
 
 * [integrating-google-authentication-with-fastapi-a-step-by-step-guide](https://blog.futuresmart.ai/integrating-google-authentication-with-fastapi-a-step-by-step-guide) + [Full Code in GitHub](https://github.com/PradipNichite/FutureSmart-AI-Blog/tree/main/Google%20OAuth%20Integration%20with%20FastAPI)
