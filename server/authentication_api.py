@@ -271,6 +271,8 @@ def create_dataset_json(user_email: str):
     from pathlib import Path
     import uuid
 
+    #filepath = base16(sha256(user_email))[:32].lower()
+
     #UUID4 = (8,4,4,4,12)
     my_secret_namespace = uuid.UUID("22401260-2080-1170-2400-135021601215")
     filepath = str(uuid.uuid5(my_secret_namespace, user_email))
