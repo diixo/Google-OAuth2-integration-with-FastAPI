@@ -3,3 +3,4 @@
 /.idea
 .env
 access*.db
+server/db-storage/*.json

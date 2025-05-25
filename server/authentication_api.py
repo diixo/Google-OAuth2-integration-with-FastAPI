@@ -1,10 +1,18 @@
-from fastapi import APIRouter, Query
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    status,
+    Request,
+    Cookie,
+    Header
+    )
+
 from fastapi.responses import HTMLResponse
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from fastapi.responses import JSONResponse
 from datetime import datetime, timedelta
-from fastapi import HTTPException, status, Request, Cookie
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from starlette.responses import RedirectResponse
@@ -16,7 +24,9 @@ import os
 from dotenv import load_dotenv
 from server.authentication_db import log_db_user_access
 import logging as logger
-from fastapi import Depends
+from pydantic import BaseModel
+from bs4 import BeautifulSoup
+import json
 
 
 DB_PATH = "server/db-storage/access.db"
@@ -92,6 +102,40 @@ def get_current_user(token: str = Cookie(None)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session expired. Please login again.")
     except JWTError:
         # Handle other JWT-related errors
+        traceback.print_exc()
+        raise credentials_exception
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(status_code=401, detail="Not Authenticated")
+
+
+
+def get_current_user_header(authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    token = authorization.split(" ")[1]
+
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("sub")
+        user_email: str = payload.get("email")
+
+        if user_id is None or user_email is None:
+            raise credentials_exception
+
+        return {"user_id": user_id, "user_email": user_email}
+
+    except ExpiredSignatureError:
+        traceback.print_exc()
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session expired. Please login again.")
+    except JWTError:
         traceback.print_exc()
         raise credentials_exception
     except Exception as e:
@@ -179,6 +223,7 @@ async def auth(request: Request):
     logger.info(f"User_name: {user_name}")
     logger.info(f"User_email: {user_email}")
     logger.info(f"User_id: {user_id}, redirect_uri: {redirect_uri}")
+    logger.info(f"token: {access_token}")
 
     final_url = f"{redirect_uri}?token={access_token}&user={user_name}&email={user_email}"
     return RedirectResponse(url=final_url)
@@ -222,6 +267,80 @@ async def logout(request: Request):
     return response
 
 
-@router.get("/aiveex")
-async def get_response(current_user: dict = Depends(get_current_user)):
-    return {"message": "Welcome!", "user": current_user}
+def create_dataset_json(user_email: str):
+    from pathlib import Path
+    import uuid
+
+    #UUID4 = (8,4,4,4,12)
+    my_secret_namespace = uuid.UUID("22401260-2080-1170-2400-135021601215")
+    filepath = str(uuid.uuid5(my_secret_namespace, user_email))
+    filepath = "server/db-storage/" + filepath + ".json"
+
+    print(f"filepath = {filepath}")
+
+    dataset = dict()
+
+    if Path(filepath).exists():
+        fd = open(filepath, 'r', encoding='utf-8')
+        dataset = json.load(fd)
+    return dataset, filepath
+
+
+def save_new_item(user_email: str, url: str, i_txt: list):
+
+    dataset, filepath = create_dataset_json(user_email)
+
+    if "content" not in dataset:
+        dataset["content"] = dict()
+    chapter = dataset["content"]
+
+    if url not in chapter:
+        chapter[url] = []
+
+    txt = chapter[url]
+    txt_set = set(txt)
+    for t in i_txt:
+        if t not in txt_set: txt.append(t)
+    chapter[url] = txt
+
+    with open(filepath, 'w', encoding='utf-8') as fd:
+        json.dump(dataset, fd, ensure_ascii=False, indent=2)
+
+
+
+class SelectionData(BaseModel):
+    url: str
+    selection_html: str
+
+
+@router.post("/save-selection")
+async def save_selection(data: SelectionData, current_user: dict = Depends(get_current_user_header)):
+
+    user_email = current_user.get("user_email")
+    url = data.url.strip('/')
+
+    print(f"E-mail: {user_email}, Received URL: {url}")
+    print(f"Received Selection HTML:\n{data.selection_html}")
+
+    soup = BeautifulSoup(data.selection_html, 'html.parser')
+
+    all_text = soup.get_text(strip=False)
+
+    #print("all_text:", all_text)
+
+    all_items = all_text.split('\n')
+
+    all_items = [ item for item in all_items if item.strip() != "" ]
+
+    if len(all_items) > 1:
+        all_items.append(all_text.replace('\n', ' '))
+
+    save_new_item(user_email, url, all_items)
+
+    #print(f"Extracted Text:\n{all_text}")
+
+    return {
+        "status": "ok",
+        "all_text": all_items[-1],
+        "items_count": "items:" + str(len(all_items)),
+    }
