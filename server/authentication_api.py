@@ -270,12 +270,15 @@ async def logout(request: Request):
 def create_dataset_json(user_email: str):
     from pathlib import Path
     import uuid
+    import hashlib
 
-    #filepath = base16(sha256(user_email))[:32].lower()
+    #filepath = hashlib.sha256(user_email.encode('utf-8')).hexdigest()[:32]
+    # [0..f] -->> [a..p]
+    #filepath = ''.join(chr(ord('a') + int(c, 16)) for c in filepath)
 
     #UUID4 = (8,4,4,4,12)
-    my_secret_namespace = uuid.UUID("22401260-2080-1170-2400-135021601215")
-    filepath = str(uuid.uuid5(my_secret_namespace, user_email))
+    secret_bias_namespace = uuid.UUID("22401260-2080-1170-2000-112521601215")
+    filepath = str(uuid.uuid5(secret_bias_namespace, user_email))
     filepath = "server/db-storage/" + filepath + ".json"
 
     print(f"filepath = {filepath}")
@@ -322,7 +325,7 @@ async def save_selection(data: SelectionData, current_user: dict = Depends(get_c
     url = data.url.strip('/')
 
     print(f"E-mail: {user_email}, Received URL: {url}")
-    print(f"Received Selection HTML:\n{data.selection_html}")
+    #print(f"Received Selection HTML:\n{data.selection_html}")
 
     soup = BeautifulSoup(data.selection_html, 'html.parser')
 
