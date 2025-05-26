@@ -332,3 +332,21 @@ async def add_bookmark_page(data: HtmlPage, current_user: dict = Depends(get_cur
     logger.info(f"Resulted description: {description}")
     #save_new_item(current_user.get("user_email"), data.url, [description])
     return {"status": 200}
+
+
+class SelectionTags(BaseModel):
+    url: str
+    tag_prompt: str
+    selection_html: str
+
+
+@router.post("/add-selection-tags")
+async def add_selection_tags(data: SelectionTags, current_user: dict = Depends(get_current_user_header)):
+    logger.info(f"<<-- add-selection-tags")
+    return {"status": "ok"}
+
+
+@router.get("/get-data")
+async def get_data():
+    data = ["Item 1", "Item 2", "Item 3", "Item 4"]
+    return {"items": data}
