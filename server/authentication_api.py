@@ -21,11 +21,11 @@ import traceback
 import requests
 import os
 from dotenv import load_dotenv
-from server.extension_db import log_db_user_access
 import logging as logger
 from pydantic import BaseModel
 from bs4 import BeautifulSoup
-import json
+from server.extension_db import log_db_user_access
+from server.extension_utils import save_new_item
 
 
 DB_PATH = "server/db-storage/access.db"
@@ -256,52 +256,6 @@ async def welcome(request: Request):
         </body>
     </html>
     """
-
-
-def create_dataset_json(user_email: str):
-    from pathlib import Path
-    import uuid
-    import hashlib
-
-    #filepath = hashlib.sha256(user_email.encode('utf-8')).hexdigest()[:32]
-    # [0..f] -->> [a..p]
-    #filepath = ''.join(chr(ord('a') + int(c, 16)) for c in filepath)
-
-    #UUID4 = (8,4,4,4,12)
-    secret_bias_namespace = uuid.UUID("22401260-2080-1170-2000-112521601215")
-    filepath = str(uuid.uuid5(secret_bias_namespace, user_email))
-    filepath = "server/db-storage/" + filepath + ".json"
-
-    logger.info(f"filepath = {filepath}")
-
-    dataset = dict()
-
-    if Path(filepath).exists():
-        fd = open(filepath, 'r', encoding='utf-8')
-        dataset = json.load(fd)
-    return dataset, filepath
-
-
-def save_new_item(user_email: str, url: str, i_txt: list):
-    url = url.strip('/')
-    dataset, filepath = create_dataset_json(user_email)
-
-    if "content" not in dataset:
-        dataset["content"] = dict()
-    chapter = dataset["content"]
-
-    if url not in chapter:
-        chapter[url] = []
-
-    txt = chapter[url]
-    txt_set = set(txt)
-    for t in i_txt:
-        if t not in txt_set: txt.append(t)
-    chapter[url] = txt
-
-    with open(filepath, 'w', encoding='utf-8') as fd:
-        json.dump(dataset, fd, ensure_ascii=False, indent=2)
-
 
 
 class SelectionData(BaseModel):
