@@ -382,7 +382,7 @@ async def parse_save_page(data: HtmlPage, current_user: dict = Depends(get_curre
 async def add_bookmark_page(data: HtmlPage, current_user: dict = Depends(get_current_user_header)):
     logger.info(f"Received URL: {data.url}")
     logger.info(f"Received tag_name: {data.tag_name}")
-    logger.info(f"Received tag_name: {data.html}")
+    logger.info(f"Received description: {data.html}")
     description = data.tag_name if data.tag_name else data.html
     logger.info(f"Resulted description: {description}")
     #save_new_item(current_user.get("user_email"), data.url, [description])
