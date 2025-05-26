@@ -281,7 +281,7 @@ def create_dataset_json(user_email: str):
     filepath = str(uuid.uuid5(secret_bias_namespace, user_email))
     filepath = "server/db-storage/" + filepath + ".json"
 
-    print(f"filepath = {filepath}")
+    logger.info(f"filepath = {filepath}")
 
     dataset = dict()
 
@@ -324,7 +324,7 @@ async def save_selection(data: SelectionData, current_user: dict = Depends(get_c
     user_email = current_user.get("user_email")
     url = data.url.strip('/')
 
-    print(f"E-mail: {user_email}, Received URL: {url}")
+    logger.info(f"E-mail: {user_email}, Received URL: {url}")
     #print(f"Received Selection HTML:\n{data.selection_html}")
 
     soup = BeautifulSoup(data.selection_html, 'html.parser')
@@ -349,3 +349,39 @@ async def save_selection(data: SelectionData, current_user: dict = Depends(get_c
         "all_text": all_items[-1],
         "items_count": "items:" + str(len(all_items)),
     }
+
+
+class HtmlPage(BaseModel):
+    url: str
+    tag_name: str
+    html: str
+
+
+@router.post("/parse-save-page")
+async def parse_save_page(data: HtmlPage, current_user: dict = Depends(get_current_user_header)):
+    url = data.url.strip('/')
+    print(f"Received URL: {url}")
+
+    soup = BeautifulSoup(data.html, "html.parser")
+
+    tag_name = ["h1"] if data.tag_name == "" else data.tag_name
+
+    item_list = [item.get_text(strip=True) for item in soup.find_all(tag_name)]
+    logger.info(f"item_list.sz={len(item_list)}")
+    logger.info(item_list)
+
+    save_new_item(current_user.get("user_email"), url, item_list)
+
+    return {
+        "status": "ok",
+        "received_url": url,
+        "items_count": "items:" + str(len(item_list)),
+    }
+
+
+@router.post("/add-bookmark-page")
+async def add_bookmark_page(data: HtmlPage, current_user: dict = Depends(get_current_user_header)):
+    url = data.url.strip('/')
+    logger.info(f"Received URL: {url}")
+    logger.info(f"Received tag_name: {data.tag_name}")
+    return {"status": 200}
