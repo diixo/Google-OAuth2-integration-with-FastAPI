@@ -16,13 +16,12 @@ from datetime import datetime, timedelta
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from starlette.responses import RedirectResponse
-from fastapi.responses import JSONResponse
 from jose import JWTError, jwt, ExpiredSignatureError, JWTError
 import traceback
 import requests
 import os
 from dotenv import load_dotenv
-from server.authentication_db import log_db_user_access
+from server.extension_db import log_db_user_access
 import logging as logger
 from pydantic import BaseModel
 from bs4 import BeautifulSoup
@@ -257,14 +256,6 @@ async def welcome(request: Request):
         </body>
     </html>
     """
-
-
-@router.get("/logout")
-async def logout(request: Request):
-    request.session.clear()
-    response = JSONResponse(content={"message": "Logged out successfully."})
-    response.delete_cookie("token")
-    return response
 
 
 def create_dataset_json(user_email: str):
