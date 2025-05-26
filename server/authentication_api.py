@@ -292,7 +292,7 @@ def create_dataset_json(user_email: str):
 
 
 def save_new_item(user_email: str, url: str, i_txt: list):
-
+    url = url.strip('/')
     dataset, filepath = create_dataset_json(user_email)
 
     if "content" not in dataset:
@@ -322,9 +322,8 @@ class SelectionData(BaseModel):
 async def save_selection(data: SelectionData, current_user: dict = Depends(get_current_user_header)):
 
     user_email = current_user.get("user_email")
-    url = data.url.strip('/')
 
-    logger.info(f"E-mail: {user_email}, Received URL: {url}")
+    logger.info(f"E-mail: {user_email}, Received URL: {data.url}")
     #print(f"Received Selection HTML:\n{data.selection_html}")
 
     soup = BeautifulSoup(data.selection_html, 'html.parser')
@@ -340,7 +339,7 @@ async def save_selection(data: SelectionData, current_user: dict = Depends(get_c
     if len(all_items) > 1:
         all_items.append(all_text.replace('\n', ' '))
 
-    save_new_item(user_email, url, all_items)
+    save_new_item(user_email, data.url, all_items)
 
     #print(f"Extracted Text:\n{all_text}")
 
@@ -381,7 +380,10 @@ async def parse_save_page(data: HtmlPage, current_user: dict = Depends(get_curre
 
 @router.post("/add-bookmark-page")
 async def add_bookmark_page(data: HtmlPage, current_user: dict = Depends(get_current_user_header)):
-    url = data.url.strip('/')
-    logger.info(f"Received URL: {url}")
+    logger.info(f"Received URL: {data.url}")
     logger.info(f"Received tag_name: {data.tag_name}")
+    logger.info(f"Received tag_name: {data.html}")
+    description = data.tag_name if data.tag_name else data.html
+    logger.info(f"Resulted description: {description}")
+    #save_new_item(current_user.get("user_email"), data.url, [description])
     return {"status": 200}
