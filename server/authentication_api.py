@@ -5,9 +5,10 @@ from fastapi import (
     status,
     Request,
     Cookie,
-    Header
+    Header,
+    Query
     )
-
+from typing import List
 from fastapi.responses import HTMLResponse
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
@@ -25,7 +26,7 @@ import logging as logger
 from pydantic import BaseModel
 from bs4 import BeautifulSoup
 from server.extension_db import log_db_user_access
-from server.extension_utils import save_new_item
+from server.extension_utils import save_new_item, create_dataset_json
 
 
 DB_PATH = "server/db-storage/access.db"
@@ -222,7 +223,7 @@ async def auth(request: Request):
     logger.info(f"User_name: {user_name}")
     logger.info(f"User_email: {user_email}")
     logger.info(f"User_id: {user_id}, redirect_uri: {redirect_uri}")
-    logger.info(f"token: {access_token}")
+    #logger.info(f"token: {access_token}")
 
     final_url = f"{redirect_uri}?token={access_token}&user={user_name}&email={user_email}"
     return RedirectResponse(url=final_url)
@@ -346,7 +347,11 @@ async def add_selection_tags(data: SelectionTags, current_user: dict = Depends(g
     return {"status": "ok"}
 
 
-@router.get("/get-data")
-async def get_data():
-    data = ["Item 1", "Item 2", "Item 3", "Item 4"]
-    return {"items": data}
+@router.get("/search-ext", response_model=List[str])
+async def search_ext(query: str = Query(...), current_user: dict = Depends(get_current_user_header)):
+
+    logger.info(f"email: {current_user.get('user_email')}, query: {query}")
+    #data = ["Item 1", "Item 2", "Item 3", "Item 4"]
+    data, _ = create_dataset_json(current_user.get('user_email'))
+    content = data["content"]
+    return list(content.keys())

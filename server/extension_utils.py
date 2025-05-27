@@ -24,6 +24,10 @@ def create_dataset_json(user_email: str):
     if Path(filepath).exists():
         fd = open(filepath, 'r', encoding='utf-8')
         dataset = json.load(fd)
+
+    if "content" not in dataset:
+        dataset["content"] = dict()
+
     return dataset, filepath
 
 
@@ -31,8 +35,6 @@ def save_new_item(user_email: str, url: str, i_txt: list):
     url = url.strip('/')
     dataset, filepath = create_dataset_json(user_email)
 
-    if "content" not in dataset:
-        dataset["content"] = dict()
     chapter = dataset["content"]
 
     if url not in chapter:
