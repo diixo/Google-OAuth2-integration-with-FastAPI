@@ -15,7 +15,6 @@ from starlette.config import Config
 from fastapi.responses import JSONResponse
 from datetime import datetime, timedelta
 from authlib.integrations.starlette_client import OAuth
-from starlette.config import Config
 from starlette.responses import RedirectResponse
 from jose import JWTError, jwt, ExpiredSignatureError, JWTError
 import traceback
@@ -358,7 +357,7 @@ async def add_selection_tags(data: SelectionTags, current_user: dict = Depends(g
 async def search_ext(query: str = Query(...), current_user: dict = Depends(get_current_user_header)):
 
     logger.info(f"email: {current_user.get('user_email')}, query: {query}")
-    #data = ["Item 1", "Item 2", "Item 3", "Item 4"]
+
     data, _ = create_dataset_json(current_user.get('user_email'))
     content = data["content"]
     return list(content.keys())
