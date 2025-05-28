@@ -339,7 +339,7 @@ async def add_bookmark_page(data: HtmlPage, current_user: dict = Depends(get_cur
     result = save_new_bookmark(current_user.get("user_email"), data.url, description)
     if result is not None:
         return JSONResponse(status_code=500, content={"details": f"Bookmark already exists:\n{result}"})
-    return JSONResponse(status_code=200)
+    return JSONResponse(status_code=200, content={"details": "Bookmark added successfully"})
 
 
 class SelectionTags(BaseModel):
