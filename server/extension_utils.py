@@ -2,6 +2,11 @@
 import json
 import logging as logger
 from pathlib import Path
+from starlette.config import Config
+
+
+config = Config("server/.env")
+REDIRECT_URL = config("REDIRECT_URL")
 
 
 def create_dataset_json(user_email: str):
@@ -12,9 +17,13 @@ def create_dataset_json(user_email: str):
     # [0..f] -->> [a..p]
     #filepath = ''.join(chr(ord('a') + int(c, 16)) for c in filepath)
 
-    #UUID4 = (8,4,4,4,12)
-    secret_bias_namespace = uuid.UUID("22401260-2000-1125-2080-117021601215")
-    filepath = str(uuid.uuid5(secret_bias_namespace, user_email))
+    if REDIRECT_URL.find("http://127.0.0.1") >= 0:
+        filepath = "debug"
+    else:
+        #UUID4 = (8,4,4,4,12)
+        secret_bias_namespace = uuid.UUID("22401260-2000-1125-2080-117021601215")
+        filepath = str(uuid.uuid5(secret_bias_namespace, user_email))
+
     filepath = "server/db-storage/" + filepath + ".json"
 
     logger.info(f"filepath = {filepath}")
