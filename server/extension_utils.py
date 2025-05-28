@@ -27,6 +27,8 @@ def create_dataset_json(user_email: str):
 
     if "content" not in dataset:
         dataset["content"] = dict()
+    if "bookmarks" not in dataset:
+        dataset["bookmarks"] = dict()
 
     return dataset, filepath
 
@@ -48,3 +50,18 @@ def save_new_item(user_email: str, url: str, i_txt: list):
 
     with open(filepath, 'w', encoding='utf-8') as fd:
         json.dump(dataset, fd, ensure_ascii=False, indent=2)
+
+
+def save_new_bookmark(user_email: str, url: str, description: str):
+    url = url.strip('/')
+    dataset, filepath = create_dataset_json(user_email)
+
+    chapter = dataset["bookmarks"]
+    if url in chapter:
+        logger.info(f"url: {url}")
+        return chapter[url]
+
+    chapter[url] = description
+    with open(filepath, 'w', encoding='utf-8') as fd:
+        json.dump(dataset, fd, ensure_ascii=False, indent=2)
+    return None

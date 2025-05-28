@@ -26,7 +26,7 @@ import logging as logger
 from pydantic import BaseModel
 from bs4 import BeautifulSoup
 from server.extension_db import log_db_user_access
-from server.extension_utils import save_new_item, create_dataset_json
+from server.extension_utils import save_new_item, save_new_bookmark, create_dataset_json
 
 
 DB_PATH = "server/db-storage/access.db"
@@ -70,7 +70,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=30)
+        expire = datetime.utcnow() + timedelta(minutes=60)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -324,15 +324,22 @@ async def parse_save_page(data: HtmlPage, current_user: dict = Depends(get_curre
     }
 
 
-@router.post("/add-bookmark-page")
+
+class StatusResponse(BaseModel):
+    status: int
+
+@router.post("/add-bookmark-page", response_model=StatusResponse)
 async def add_bookmark_page(data: HtmlPage, current_user: dict = Depends(get_current_user_header)):
     logger.info(f"Received URL: {data.url}")
-    logger.info(f"Received tag_name: {data.tag_name}")
-    logger.info(f"Received description: {data.html}")
+    logger.info(f"Received user-text: {data.tag_name}")
+    logger.info(f"Received title-description: {data.html}")
     description = data.tag_name if data.tag_name else data.html
     logger.info(f"Resulted description: {description}")
-    #save_new_item(current_user.get("user_email"), data.url, [description])
-    return {"status": 200}
+    
+    result = save_new_bookmark(current_user.get("user_email"), data.url, description)
+    if result is not None:
+        return JSONResponse(status_code=500, content={"details": f"Bookmark already exists:\n{result}"})
+    return JSONResponse(status_code=200)
 
 
 class SelectionTags(BaseModel):
@@ -344,7 +351,7 @@ class SelectionTags(BaseModel):
 @router.post("/add-selection-tags")
 async def add_selection_tags(data: SelectionTags, current_user: dict = Depends(get_current_user_header)):
     logger.info(f"<<-- add-selection-tags")
-    return {"status": "ok"}
+    return JSONResponse(status_code=200)
 
 
 @router.get("/search-ext", response_model=List[str])
