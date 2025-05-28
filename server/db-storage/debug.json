@@ -1,0 +1,95 @@
+{
+  "content": {
+    "https://github.com/ai-forever/mgpt": [
+      "mGPT",
+      "Multilingual Generative Pretrained Transformer",
+      "mGPT Multilingual Generative Pretrained Transformer",
+      "mGPT Multilingual Generative Pretrained Transformer "
+    ],
+    "https://deepai.org/machine-learning-model/torch-srgan": [
+      "Super Resolution",
+      "The Super Resolution API uses machine learning to clarify, sharpen, and upscale the photo without losing its content and defining characteristics. Blurry images are unfortunately common and are a problem for professionals and hobbyists alike. Super resolution uses machine learning techniques to upscale images in a fraction of a second.",
+      "Super Resolution The Super Resolution API uses machine learning to clarify, sharpen, and upscale the photo without losing its content and defining characteristics. Blurry images are unfortunately common and are a problem for professionals and hobbyists alike. Super resolution uses machine learning techniques to upscale images in a fraction of a second."
+    ],
+    "https://deepai.org/chat": [
+      "AI Chat",
+      "AI Chat is an AI chatbot that writes text. You can use it to write stories, messages, or programming code.",
+      "AI Chat AI Chat is an AI chatbot that writes text. You can use it to write stories, messages, or programming code."
+    ],
+    "https://deepai.org/machine-learning-model/text2img": [
+      "AI Image Generator",
+      "This is an AI Image Generator. It creates an image from scratch from a text description.",
+      "AI Image Generator This is an AI Image Generator. It creates an image from scratch from a text description."
+    ],
+    "https://deepai.org/video": [
+      "AI Video Generator",
+      "This AI video generator converts text to video, or image to video. Use it to convert images to animations. Or, Create videos from scratch from text!",
+      "AI Video Generator This AI video generator converts text to video, or image to video. Use it to convert images to animations. Or, Create videos from scratch from text!"
+    ],
+    "https://deepai.org/machine-learning-model/image-editor": [
+      "AI Photo Editor",
+      "Edit photos and images with AI.",
+      "AI Photo Editor Edit photos and images with AI."
+    ],
+    "https://deepai.org/voice": [
+      "Voice Chat",
+      "Voice Chat by Deep AI. Chat with AI using your voice. The most advanced AI voice chat mode.",
+      "Voice Chat Voice Chat by Deep AI. Chat with AI using your voice. The most advanced AI voice chat mode."
+    ],
+    "https://www.viinyx.com": [
+      "Generate any text and imageThe most useful all-in-one AI assistantPowered by ChatGPT, GPT-4o, o3, Gemini 2, Claude 3.5+, DeepSeek, DALL·E 3,FLUX, and many more."
+    ],
+    "https://www.saashub.com/about": [
+      "SaaSHub",
+      "SaaSHub is your independent software marketplace. Our goal is to help",
+      "end users find the best software and product alternatives while helping",
+      "software vendors improve their online presence and promote their software.",
+      "What do you mean by independent?",
+      "We will always use the same logic to prepare our main lists of alternatives.",
+      "We may highlight featured products, but we never move products up the ranking list",
+      "just because they are featured. While some products might be listed as recommended",
+      "on the sidebar, the main lists are entirely based on objective criteria.",
+      "How does SaaSHub work?",
+      "We collect articles containing",
+      "product reviews, alternatives to a particular product or lists",
+      "with the best software available in a specific category. Then, based on our",
+      "algorithms and user votes, we compile lists with the best alternatives.",
+      "Product Verification",
+      "The process of product verification is one of the cornerstones of SaaSHub.",
+      "On one side, it ensures that end-users see only up-to-date and verified information.",
+      "For example, current pricing, description, logos, etc. of products.",
+      "On the other side, it gives software vendors the control over their listing in",
+      "our marketplace.",
+      "Learn more →",
+      "Once a product is verified, a vendor's representative is going to receive a",
+      "quarterly notification with a one-click option to verify their listing. That will",
+      "help us keep all the information up to date.",
+      "More...",
+      "As a Startup, SaaSHub is under constant development. We are continuously working",
+      "towards improving it, keeping it simple, making it more helpful and providing objective lists.",
+      "Should you have any feedback or ideas for improvement, please, do not hesitate",
+      "to drop us a line through the \"Feedback\" button in the bottom right corner.",
+      "We may use affiliate or promotional links for some products that we recommend or that we partner with.",
+      "We may receive compensation from companies for promoting their products through our website. Only approved",
+      "products can be promoted on SaaSHub. This helps us to keep improving and supporting the platform.",
+      "SaaSHub  SaaSHub is your independent software marketplace. Our goal is to help end users find the best software and product alternatives while helping software vendors improve their online presence and promote their software.  What do you mean by independent?  We will always use the same logic to prepare our main lists of alternatives. We may highlight featured products, but we never move products up the ranking list just because they are featured. While some products might be listed as recommended on the sidebar, the main lists are entirely based on objective criteria.  How does SaaSHub work?  We collect articles containing product reviews, alternatives to a particular product or lists with the best software available in a specific category. Then, based on our algorithms and user votes, we compile lists with the best alternatives.  Product Verification  The process of product verification is one of the cornerstones of SaaSHub. On one side, it ensures that end-users see only up-to-date and verified information. For example, current pricing, description, logos, etc. of products. On the other side, it gives software vendors the control over their listing in our marketplace. Learn more →   Once a product is verified, a vendor's representative is going to receive a quarterly notification with a one-click option to verify their listing. That will help us keep all the information up to date.  More...  As a Startup, SaaSHub is under constant development. We are continuously working towards improving it, keeping it simple, making it more helpful and providing objective lists.   Should you have any feedback or ideas for improvement, please, do not hesitate to drop us a line through the \"Feedback\" button in the bottom right corner.   We may use affiliate or promotional links for some products that we recommend or that we partner with. We may receive compensation from companies for promoting their products through our website. Only approved products can be promoted on SaaSHub. This helps us to keep improving and supporting the platform."
+    ]
+  },
+  "bookmarks": {
+    "https://github.com/ai-forever/mgpt": "ai-forever/mgpt: Multilingual Generative Pretrained Model",
+    "https://github.com/legacyai/tf-transformers": "legacyai/tf-transformers: State of the art faster Transformer with Tensorflow 2.0 ( NLP, Computer Vision, Audio ).",
+    "https://www.viinyx.com": "Viinyx AI - The Best All-in-one AI browser assistant",
+    "https://www.saasradius.com/categories": "SaaS Radius - Categories",
+    "https://www.saashub.com/categories": "Top Categories - SaaSHub",
+    "https://github.com/yumingj/DeepFashion-MultiModal": "yumingj/DeepFashion-MultiModal: A large-scale high-quality human dataset with rich multi-modal annotations",
+    "https://github.com/maxmoundas/NanoGPT": "maxmoundas/NanoGPT: Character-level GPT model that can easily be trained on any .txt dataset",
+    "https://github.com/cthiriet/femtoGPT/tree/main": "cthiriet/femtoGPT: a GPT in pure Python",
+    "https://github.com/dleemiller/WordLlama/blob/main/wordllama/embedding/word_llama_embedding.py": "WordLlama/wordllama/embedding/word_llama_embedding.py at main · dleemiller/WordLlama",
+    "https://github.com/diixo/vectorEmbeddings/blob/main/vector_embedding.py": "Provides a class for working with text embeddings and searching for matches in a Question-Answer database.",
+    "https://jarrentwu1031.github.io/SingleInsert-web": "SingleInsert:\nInserting New Concepts from a Single Image into Text-to-Image Models for Flexible Editing",
+    "https://github.com/jinlinyi/PerspectiveFields": "jinlinyi/PerspectiveFields: [CVPR 2023 Highlight] Perspective Fields for Single Image Camera Calibration",
+    "https://habr.com/ru/articles/823568": "Он победил LLM RAG: реализуем BM25+ с самых азов / Хабр",
+    "https://paperswithcode.com/datasets?q=bAbi&mod=texts": "Machine Learning Datasets | Papers With Code",
+    "https://blog.vespa.ai/announcing-long-context-colbert-in-vespa": "Announcing Vespa Long-Context ColBERT | Vespa Blog"
+  }
+}
