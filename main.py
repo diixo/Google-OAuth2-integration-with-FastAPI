@@ -53,7 +53,7 @@ async def log_response_time(request: Request, call_next):
     response = await call_next(request)
     process_time = time.time() - start_time
     logger.info(f"Request: {request.url.path} completed in {process_time:.4f} seconds")
-    return response 
+    return response
 
 
 if __name__ == "__main__":

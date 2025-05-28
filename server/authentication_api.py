@@ -222,7 +222,7 @@ async def auth(request: Request):
 
     logger.info(f"User_name: {user_name}")
     logger.info(f"User_email: {user_email}")
-    logger.info(f"User_id: {user_id}, redirect_uri: {redirect_uri}")
+    logger.info(f"User_id: {user_id}, expires_sec: {expires_in}, redirect_uri: {redirect_uri}")
     #logger.info(f"token: {access_token}")
 
     final_url = f"{redirect_uri}?token={access_token}&user={user_name}&email={user_email}"
