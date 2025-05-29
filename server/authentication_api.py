@@ -279,10 +279,11 @@ async def save_selection(data: SelectionData, current_user: dict = Depends(get_c
 
     all_items = all_text.split('\n')
 
-    all_items = [ item for item in all_items if item.strip() != "" ]
+    all_items = [ item.strip() for item in all_items if item.strip() != "" ]
 
     if len(all_items) > 1:
-        all_items.append(all_text.replace('\n', ' '))
+        summary = " ".join(all_items)
+        all_items.append(summary)
 
     save_new_item(user_email, data.url, all_items)
 
@@ -350,7 +351,7 @@ class SelectionTags(BaseModel):
 @router.post("/add-selection-tags")
 async def add_selection_tags(data: SelectionTags, current_user: dict = Depends(get_current_user_header)):
     logger.info(f"<<-- add-selection-tags")
-    return JSONResponse(status_code=200)
+    return JSONResponse(status_code=200, content={"details": "ok"})
 
 
 @router.get("/search-ext", response_model=List[str])
