@@ -58,8 +58,4 @@ async def log_response_time(request: Request, call_next):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(
-        app,
-        host="0.0.0.0",
-        port=int(API_PORT)
-    )
+    uvicorn.run(app, host="0.0.0.0", port=int(API_PORT))
