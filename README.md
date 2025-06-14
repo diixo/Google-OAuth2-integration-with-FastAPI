@@ -50,7 +50,7 @@ JWT_SECRET_KEY = <your-jwt-secret-key>
 
 * Вы на клиенте (расширение или сайт) открываете страницу авторизации Google.
 
-* Google спрашивает разрешение и отдаёт авторизационный код.
+* Google спрашивает, проверяет разрешение и отдаёт авторизационный код.
 
 * Вы отправляете этот код на ваш сервер.
 
@@ -58,7 +58,7 @@ JWT_SECRET_KEY = <your-jwt-secret-key>
 
 * Сервер сохраняет JWT (или сессию) в БД, и кладёт в cookie (token).
 
-* Возвращать токен, creds в RedirectResponse на адрес, в наше случае полученный от **chrome.identity.getRedirectURL("provider_cb")** прокинутый через сессию (либо возврат на welcome-страницу, либо на Google redirect_url с токеном)
+* Сервер возвращает токен, creds в RedirectResponse на адрес, в наше случае полученный от **chrome.identity.getRedirectURL("provider_cb")** прокинутый через сессию (либо возврат на welcome-страницу, либо на Google redirect_url с токеном)
 
 
 ## Routing of Working process
