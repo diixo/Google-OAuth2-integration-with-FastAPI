@@ -17,7 +17,7 @@ def create_dataset_json(user_email: str):
     # [0..f] -->> [a..p]
     #filepath = ''.join(chr(ord('a') + int(c, 16)) for c in filepath)
 
-    if REDIRECT_URL.find("http://127.0.0.1") >= 0:
+    if REDIRECT_URL.find("http://127.0.0.1") >= 0 or user_email is None:
         filepath = "debug"
     else:
         #UUID4 = (8,4,4,4,12)
