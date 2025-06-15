@@ -162,6 +162,21 @@ async def login(request: Request):
     return await oauth.auth_demo.authorize_redirect(request, redirect_url, prompt="consent")
 
 
+def notify_django_of_auth(jwt_token: str):
+    url = "http://localhost:8000/api/login-google"
+    headers = {
+        "Authorization": f"Bearer {jwt_token}",
+        "Content-Type": "application/json",
+    }
+
+    response = requests.post(url, headers=headers)
+    if response.status_code == 200:
+        logger.warning(">> Django-User successfully commited")
+    else:
+        logger.warning(">> Django-User commit error:", response.status_code)
+    return response
+
+
 @router.route("/auth")
 async def auth(request: Request):
     state_in_request = request.query_params.get("state")
@@ -212,6 +227,17 @@ async def auth(request: Request):
     if log_db_user_access(user_id, user_email, user_name, first_logged_in, last_accessed, None, DB_PATH) == None:
         raise HTTPException(status_code=401, detail="Google authentication failed (wrong user_id).")
 
+    # ----------------------------------------------------------------------------
+    django_response = notify_django_of_auth(jwt_token=access_token)
+    if django_response.status_code != 200:
+        raise HTTPException(status_code=500, detail="Failed to sync with Django.")
+
+    sessionid = django_response.cookies.get("sessionid")
+    if not sessionid:
+        raise HTTPException(status_code=500, detail="No session ID from Django.")
+    logger.info(f"Django_sessionid: {sessionid}")
+    # ----------------------------------------------------------------------------
+
     ######################### Return to Welcome-page
     # return RedirectResponse(f"/welcome?name={user_name}&email={user_email}")
 
@@ -225,7 +251,15 @@ async def auth(request: Request):
     #logger.info(f"token: {access_token}")
 
     final_url = f"{redirect_uri}?token={access_token}&user={user_name}&email={user_email}"
-    return RedirectResponse(url=final_url)
+    response = RedirectResponse(url=final_url)
+    response.set_cookie(
+        key="sessionid",
+        value=sessionid,
+        httponly=True,
+        path="/",       # path is applicable only for the host, from which the response is sent
+        samesite="Lax"  # "None", if using Secure
+    )
+    return response
 
     ######################### Return by Google redirect_url
     redirect_url = request.session.pop("login_redirect", "")

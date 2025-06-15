@@ -7,8 +7,14 @@ from django.contrib import messages
 from django.conf import settings
 from . import viix_api
 
+import logging as logger
+
 
 def main(request):
+    if request.user.is_authenticated:
+        logger.info(f"User login-ed OK: {request.user.email}")
+    else: logger.info("User not logined")
+
     return redirect(to="app_main:ai-search")
     return render(request, "app_main/index.html", context={
         "title": "Viix AI-search for AI-tools",
@@ -16,6 +22,10 @@ def main(request):
 
 
 def ai_search(request):
+    if request.user.is_authenticated:
+        logger.info(f"User login-ed OK: {request.user.email}")
+    else: logger.info("User not logined")
+
     api = viix_api.get_api()
     result = None
     results_amount = ""
