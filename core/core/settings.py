@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+FASTAPI_JWT_SECRET = 'your-jwt-secret-key'
+FASTAPI_JWT_ALGORITHM = 'HS256'
+
 
 # Application definition
 
@@ -48,6 +51,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 ROOT_URLCONF = 'core.urls'
