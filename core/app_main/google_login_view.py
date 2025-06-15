@@ -41,22 +41,28 @@ class GoogleLoginView(APIView):
         if not email:
             raise AuthenticationFailed("No email in token")
 
+        email_name = email.split("@")[0]
+        given_name = payload.get("given_name", "")
+        family_name  = payload.get("family_name", "")
+
         # Создаём пользователя на лету (если его ещё нет)
         user, created = User.objects.get_or_create(
             email=email,
             defaults={
-                "username": email.split("@")[0],
-                "first_name": payload.get("given_name", ""),
-                "last_name": payload.get("family_name", "")
+                "username": email_name,
+                "first_name": given_name,
+                "last_name": family_name
             }
         )
 
         if created:
-            user.username = email.split("@")[0]
-            user.first_name = payload.get("given_name", "")
-            user.last_name = payload.get("family_name", "")
+            user.username = email_name
+            user.first_name = given_name
+            user.last_name = family_name
             user.set_unusable_password()
             user.save()
+
+        logger.info(f"User: {email}, first_name={given_name}, last_name={family_name}")
 
         user.last_login = now()
         user.save()
