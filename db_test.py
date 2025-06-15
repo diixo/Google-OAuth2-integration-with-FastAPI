@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime, timedelta
-from db_utils.db import log_db_user_access
+from server.extension_db import log_db_user_access
 
 
 logging.basicConfig(
