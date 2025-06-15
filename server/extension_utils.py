@@ -9,6 +9,34 @@ config = Config("server/.env")
 REDIRECT_URL = config("REDIRECT_URL")
 
 
+class Db_json:
+
+    def __init__(self):
+        self.dataset = None
+        self.filepath = None
+
+    def open_dataset(self, filepath):
+        if self.dataset is None:
+            self.dataset = dict()
+            self.filepath = filepath
+
+            if Path(filepath).exists():
+                fd = open(filepath, 'r', encoding='utf-8')
+                self.dataset = json.load(fd)
+
+            if "content" not in self.dataset:
+                self.dataset["content"] = dict()
+            if "bookmarks" not in self.dataset:
+                self.dataset["bookmarks"] = dict()
+        return self.dataset, self.filepath
+
+    # def get(self):
+    #     return self.dataset, self.filepath
+
+
+db_json = Db_json()
+
+
 def create_dataset_json(user_email: str):
     import uuid
     import hashlib
@@ -17,29 +45,31 @@ def create_dataset_json(user_email: str):
     # [0..f] -->> [a..p]
     #filepath = ''.join(chr(ord('a') + int(c, 16)) for c in filepath)
 
+    filepath = "server/db-storage/"
+
     if REDIRECT_URL.find("http://127.0.0.1") >= 0 or user_email is None:
-        filepath = "debug"
+        filepath = filepath + "debug.json"
+        global db_json
+        return db_json.open_dataset(filepath)
     else:
         #UUID4 = (8,4,4,4,12)
         secret_bias_namespace = uuid.UUID("22401260-2000-1125-2080-117021601215")
-        filepath = str(uuid.uuid5(secret_bias_namespace, user_email))
+        filepath = filepath + str(uuid.uuid5(secret_bias_namespace, user_email)) + ".json"
 
-    filepath = "server/db-storage/" + filepath + ".json"
+        logger.info(f"filepath = {filepath}")
 
-    logger.info(f"filepath = {filepath}")
+        dataset = dict()
 
-    dataset = dict()
+        if Path(filepath).exists():
+            fd = open(filepath, 'r', encoding='utf-8')
+            dataset = json.load(fd)
 
-    if Path(filepath).exists():
-        fd = open(filepath, 'r', encoding='utf-8')
-        dataset = json.load(fd)
+        if "content" not in dataset:
+            dataset["content"] = dict()
+        if "bookmarks" not in dataset:
+            dataset["bookmarks"] = dict()
 
-    if "content" not in dataset:
-        dataset["content"] = dict()
-    if "bookmarks" not in dataset:
-        dataset["bookmarks"] = dict()
-
-    return dataset, filepath
+        return dataset, filepath
 
 
 def save_new_item(user_email: str, url: str, i_txt: list):
