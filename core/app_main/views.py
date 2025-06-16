@@ -136,3 +136,19 @@ def bookmarks(request):
         "bookmarks": bookmarks,
         })
 
+
+def bookmarks_grid(request):
+    bookmarks = None
+    email = ""
+    if request.user.is_authenticated:
+        email = request.user.email
+        bookmarks = get_bookmarks_from_fastapi(email)
+
+    logger.info(f"email={email}, bookmarks.sz={len(bookmarks)}")
+
+    return render(request, "app_main/bookmarks-grid.html", context={
+        "title": "Bookmarks collection",
+        "description": "Personal bookmarks collection",
+        "bookmarks": bookmarks,
+        })
+

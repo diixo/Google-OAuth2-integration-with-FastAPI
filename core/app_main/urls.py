@@ -13,5 +13,6 @@ urlpatterns = [
     path("add-text",  views.add_text,    name="add-text"),
     path("add-page",  views.add_page,    name="add-page"),
     path("bookmarks", views.bookmarks,   name="bookmarks"),
+    path("bookmarks-grid", views.bookmarks_grid, name="bookmarks-grid"),
     path("api/login-google", google_login_view.GoogleLoginView.as_view(), name="login-google"),
 ]
