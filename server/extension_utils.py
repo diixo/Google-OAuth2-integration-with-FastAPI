@@ -30,9 +30,6 @@ class Db_json:
                 self.dataset["bookmarks"] = dict()
         return self.dataset, self.filepath
 
-    # def get(self):
-    #     return self.dataset, self.filepath
-
 
 db_json = Db_json()
 
