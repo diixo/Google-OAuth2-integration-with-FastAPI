@@ -1,0 +1,38 @@
+{% extends "app_main/base.html" %}
+
+{% block meta %}
+<title>{{title}}</title>
+<meta property="og:title" content="{{title}}">
+<meta name="description" content="{{description}}">
+<meta property="og:description" content="{{description}}">
+{% endblock %}
+
+{% block content %}
+
+<!----- internal main-content ------>
+<div class="main-content col-md-10 col-12 bg-white rounded-4 px-4" style="padding-bottom: 2.5rem; padding-top: 2.5rem;">
+
+    {% if bookmarks %}
+
+    <div class="row gx-0 rounded-3 mt-4">
+
+        {% for url, description in bookmarks.items %}
+
+        <div class="col-xxl-4 col-md-6 mb-3 d-flex">
+            <div class="container-fluid featured-slot px-0 pt-4 pb-3 bg-white rounded-4">
+                <div class="mb-2 p-3">
+                    <h3 class="fs-5 text-center"><a href="{{url}}"
+                        class="text-decoration-none">{{description}}</a></h3>
+                    <p class="mb-2">{{description}}</p>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+    </div> <!--row-->
+    {% else %}
+        <p>Нет доступных закладок.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
