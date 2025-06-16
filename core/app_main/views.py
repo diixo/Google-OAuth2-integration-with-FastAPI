@@ -6,8 +6,21 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
 from . import viix_api
-
 import logging as logger
+import requests
+
+
+def get_bookmarks_from_fastapi(email: str) -> dict:
+    response = requests.post("http://127.0.0.1:8001/bookmarks", json={ "email": email })
+    result = dict()
+
+    if response.status_code == 200:
+        data = response.json()
+        result = data["bookmarks"]
+        print("Bookmarks.sz=", len(result))
+    else:
+        print("Error.status:", response.status_code)
+    return result
 
 
 def main(request):
@@ -106,3 +119,15 @@ def add_page(request):
     return render(request, "app_main/add-page.html", context={
         "title": "viix add_page: AI-search",
         "description": "add_page: viix AI-search for AI-tools"})
+
+
+def bookmarks(request):
+    bookmarks_dict = dict()
+    email = ""
+    if request.user.is_authenticated:
+        email = request.user.email
+        bookmarks_dict = get_bookmarks_from_fastapi(email)
+
+    logger.info(f"email={email}, bookmarks.sz={len(bookmarks_dict)}")
+
+    return redirect(to="app_main:main")

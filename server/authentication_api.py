@@ -26,6 +26,8 @@ from pydantic import BaseModel
 from bs4 import BeautifulSoup
 from server.extension_db import log_db_user_access
 from server.extension_utils import save_new_item, save_new_bookmark, create_dataset_json
+from fastapi import Body
+from fastapi.responses import JSONResponse
 
 
 DB_PATH = "server/db-storage/access.db"
@@ -396,3 +398,17 @@ async def search_ext(query: str = Query(...), current_user: dict = Depends(get_c
     data, _ = create_dataset_json(current_user.get('user_email'))
     content = data["content"]
     return list(content.keys())
+
+
+@router.post("/bookmarks")
+def get_bookmarks(email: str = Body(..., embed=True)):
+
+    logger.info(f"email: {email}")
+    dict_dataset, filepath = create_dataset_json(email)
+
+    return JSONResponse(content = {
+        "status": "success",
+        "bookmarks": dict_dataset.get("bookmarks", dict())
+        },
+        status_code=200
+    )
