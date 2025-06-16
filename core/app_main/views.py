@@ -122,12 +122,17 @@ def add_page(request):
 
 
 def bookmarks(request):
-    bookmarks_dict = dict()
+    bookmarks = None
     email = ""
     if request.user.is_authenticated:
         email = request.user.email
-        bookmarks_dict = get_bookmarks_from_fastapi(email)
+        bookmarks = get_bookmarks_from_fastapi(email)
 
-    logger.info(f"email={email}, bookmarks.sz={len(bookmarks_dict)}")
+    logger.info(f"email={email}, bookmarks.sz={len(bookmarks)}")
 
-    return redirect(to="app_main:main")
+    return render(request, "app_main/bookmarks.html", context={
+        "title": "Bookmarks collection",
+        "description": "Personal bookmarks collection",
+        "bookmarks": bookmarks,
+        })
+
