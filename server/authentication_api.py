@@ -1,18 +1,14 @@
 from fastapi import (
     APIRouter,
-    Depends,
     HTTPException,
     status,
     Request,
     Cookie,
-    Header,
-    Query
+    Header
     )
-from typing import List
-from fastapi.responses import HTMLResponse
+
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
-from fastapi.responses import JSONResponse
 from datetime import datetime, timedelta
 from authlib.integrations.starlette_client import OAuth
 from starlette.responses import RedirectResponse
@@ -22,12 +18,8 @@ import requests
 import os
 from dotenv import load_dotenv
 import logging as logger
-from pydantic import BaseModel
-from bs4 import BeautifulSoup
 from server.extension_db import log_db_user_access
-from server.extension_utils import save_new_item, save_new_bookmark, create_dataset_json
-from fastapi import Body
-from fastapi.responses import JSONResponse
+
 
 
 DB_PATH = "server/db-storage/access.db"
@@ -277,138 +269,3 @@ async def auth(request: Request):
     )
     return response
 
-
-@router.get("/welcome", response_class=HTMLResponse)
-async def welcome(request: Request):
-    name = request.query_params.get("name")
-    email = request.query_params.get("email")
-
-    return f"""
-    <html>
-        <head><title>Welcome</title></head>
-        <body>
-            <h2>Добро пожаловать, {name}!</h2>
-            <p>Ваша почта: {email}</p>
-        </body>
-    </html>
-    """
-
-
-class SelectionData(BaseModel):
-    url: str
-    selection_html: str
-
-
-@router.post("/save-selection")
-async def save_selection(data: SelectionData, current_user: dict = Depends(get_current_user_header)):
-
-    user_email = current_user.get("user_email")
-
-    logger.info(f"E-mail: {user_email}, Received URL: {data.url}")
-    #print(f"Received Selection HTML:\n{data.selection_html}")
-
-    soup = BeautifulSoup(data.selection_html, 'html.parser')
-
-    all_text = soup.get_text(strip=False)
-
-    #print("all_text:", all_text)
-
-    all_items = all_text.split('\n')
-
-    all_items = [ item.strip() for item in all_items if item.strip() != "" ]
-
-    if len(all_items) > 1:
-        summary = " ".join(all_items)
-        all_items.append(summary)
-
-    save_new_item(user_email, data.url, all_items)
-
-    #print(f"Extracted Text:\n{all_text}")
-
-    return {
-        "status": "ok",
-        "all_text": all_items[-1],
-        "items_count": "items:" + str(len(all_items)),
-    }
-
-
-class HtmlPage(BaseModel):
-    url: str
-    tag_name: str
-    html: str
-
-
-@router.post("/parse-save-page")
-async def parse_save_page(data: HtmlPage, current_user: dict = Depends(get_current_user_header)):
-    url = data.url.strip('/')
-    print(f"Received URL: {url}")
-
-    soup = BeautifulSoup(data.html, "html.parser")
-
-    tag_name = ["h1"] if data.tag_name == "" else data.tag_name
-
-    item_list = [item.get_text(strip=True) for item in soup.find_all(tag_name)]
-    logger.info(f"item_list.sz={len(item_list)}")
-    logger.info(item_list)
-
-    save_new_item(current_user.get("user_email"), url, item_list)
-
-    return {
-        "status": "ok",
-        "received_url": url,
-        "items_count": "items:" + str(len(item_list)),
-    }
-
-
-
-class StatusResponse(BaseModel):
-    status: int
-
-@router.post("/add-bookmark-page", response_model=StatusResponse)
-async def add_bookmark_page(data: HtmlPage, current_user: dict = Depends(get_current_user_header)):
-    logger.info(f"Received URL: {data.url}")
-    logger.info(f"Received user-text: {data.tag_name}")
-    logger.info(f"Received title-description: {data.html}")
-    description = data.tag_name if data.tag_name else data.html
-    logger.info(f"Resulted description: {description}")
-    
-    result = save_new_bookmark(current_user.get("user_email"), data.url, description)
-    if result is not None:
-        return JSONResponse(status_code=500, content={"details": f"Bookmark already exists:\n{result}"})
-    return JSONResponse(status_code=200, content={"details": "Bookmark added successfully"})
-
-
-class SelectionTags(BaseModel):
-    url: str
-    tag_prompt: str
-    selection_html: str
-
-
-@router.post("/add-selection-tags")
-async def add_selection_tags(data: SelectionTags, current_user: dict = Depends(get_current_user_header)):
-    logger.info(f"<<-- add-selection-tags")
-    return JSONResponse(status_code=200, content={"details": "ok"})
-
-
-@router.get("/search-ext", response_model=List[str])
-async def search_ext(query: str = Query(...), current_user: dict = Depends(get_current_user_header)):
-
-    logger.info(f"email: {current_user.get('user_email')}, query: {query}")
-
-    data, _ = create_dataset_json(current_user.get('user_email'))
-    content = data["content"]
-    return list(content.keys())
-
-
-@router.post("/bookmarks")
-def get_bookmarks(email: str = Body(..., embed=True)):
-
-    logger.info(f"email: {email}")
-    dict_dataset, filepath = create_dataset_json(email)
-
-    return JSONResponse(content = {
-        "status": "success",
-        "bookmarks": dict_dataset.get("bookmarks", dict())
-        },
-        status_code=200
-    )

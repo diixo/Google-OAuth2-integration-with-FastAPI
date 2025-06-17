@@ -2,12 +2,17 @@ import logging
 import logging as logger
 import time
 from dotenv import load_dotenv
-
+from typing import List
 from starlette.config import Config
 from starlette.middleware.sessions import SessionMiddleware
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends, Query, Body
 from fastapi.middleware.cors import CORSMiddleware
 from server import authentication_api
+from server.authentication_api import get_current_user_header
+from server.extension_utils import save_new_item, save_new_bookmark, create_dataset_json
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from bs4 import BeautifulSoup
 
 
 logging.basicConfig(
@@ -56,6 +61,128 @@ async def log_response_time(request: Request, call_next):
     return response
 
 
+
+class SelectionData(BaseModel):
+    url: str
+    selection_html: str
+
+
+@app.post("/save-selection")
+async def save_selection(data: SelectionData, current_user: dict = Depends(get_current_user_header)):
+
+    user_email = current_user.get("user_email")
+
+    logger.info(f"E-mail: {user_email}, Received URL: {data.url}")
+    #print(f"Received Selection HTML:\n{data.selection_html}")
+
+    soup = BeautifulSoup(data.selection_html, 'html.parser')
+
+    all_text = soup.get_text(strip=False)
+
+    #print("all_text:", all_text)
+
+    all_items = all_text.split('\n')
+
+    all_items = [ item.strip() for item in all_items if item.strip() != "" ]
+
+    if len(all_items) > 1:
+        summary = " ".join(all_items)
+        all_items.append(summary)
+
+    save_new_item(user_email, data.url, all_items)
+
+    #print(f"Extracted Text:\n{all_text}")
+
+    return {
+        "status": "ok",
+        "all_text": all_items[-1],
+        "items_count": "items:" + str(len(all_items)),
+    }
+
+
+class HtmlPage(BaseModel):
+    url: str
+    tag_name: str
+    html: str
+
+
+@app.post("/parse-save-page")
+async def parse_save_page(data: HtmlPage, current_user: dict = Depends(get_current_user_header)):
+    url = data.url.strip('/')
+    print(f"Received URL: {url}")
+
+    soup = BeautifulSoup(data.html, "html.parser")
+
+    tag_name = ["h1"] if data.tag_name == "" else data.tag_name
+
+    item_list = [item.get_text(strip=True) for item in soup.find_all(tag_name)]
+    logger.info(f"item_list.sz={len(item_list)}")
+    logger.info(item_list)
+
+    save_new_item(current_user.get("user_email"), url, item_list)
+
+    return {
+        "status": "ok",
+        "received_url": url,
+        "items_count": "items:" + str(len(item_list)),
+    }
+
+
+
+class StatusResponse(BaseModel):
+    status: int
+
+@app.post("/add-bookmark-page", response_model=StatusResponse)
+async def add_bookmark_page(data: HtmlPage, current_user: dict = Depends(get_current_user_header)):
+    logger.info(f"Received URL: {data.url}")
+    logger.info(f"Received user-text: {data.tag_name}")
+    logger.info(f"Received title-description: {data.html}")
+    description = data.tag_name if data.tag_name else data.html
+    logger.info(f"Resulted description: {description}")
+
+    result = save_new_bookmark(current_user.get("user_email"), data.url, description)
+    if result is not None:
+        return JSONResponse(status_code=500, content={"details": f"Bookmark already exists:\n{result}"})
+    return JSONResponse(status_code=200, content={"details": "Bookmark added successfully"})
+
+
+class SelectionTags(BaseModel):
+    url: str
+    tag_prompt: str
+    selection_html: str
+
+
+@app.post("/add-selection-tags")
+async def add_selection_tags(data: SelectionTags, current_user: dict = Depends(get_current_user_header)):
+    logger.info(f"<<-- add-selection-tags")
+    return JSONResponse(status_code=200, content={"details": "ok"})
+
+
+@app.get("/search-ext", response_model=List[str])
+async def search_ext(query: str = Query(...), current_user: dict = Depends(get_current_user_header)):
+
+    logger.info(f"email: {current_user.get('user_email')}, query: {query}")
+
+    data, _ = create_dataset_json(current_user.get('user_email'))
+    content = data["content"]
+    return list(content.keys())
+
+
+@app.post("/bookmarks")
+def get_bookmarks(email: str = Body(..., embed=True)):
+
+    logger.info(f"email: {email}")
+    dict_dataset, filepath = create_dataset_json(email)
+
+    return JSONResponse(content = {
+        "status": "success",
+        "bookmarks": dict_dataset.get("bookmarks", dict())
+        },
+        status_code=200
+    )
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=int(API_PORT))
+
