@@ -3,10 +3,13 @@ import json
 import logging as logger
 from pathlib import Path
 from starlette.config import Config
+from server.smart_search import SmartSearch
 
 
 config = Config("server/.env")
 REDIRECT_URL = config("REDIRECT_URL")
+
+path_db_index = "server/db-storage/db-index.bin"
 
 
 class Db_json:
@@ -14,6 +17,8 @@ class Db_json:
     def __init__(self):
         self.dataset = None
         self.filepath = None
+        self.smart_search = SmartSearch()
+
 
     def open_dataset(self, filepath):
         if self.dataset is None:
@@ -23,6 +28,14 @@ class Db_json:
             if Path(filepath).exists():
                 fd = open(filepath, 'r', encoding='utf-8')
                 self.dataset = json.load(fd)
+
+                # handling bookmarks to smart-search index
+                if Path(path_db_index).exists():
+                    self.smart_search.open_file(path_db_index)
+                else:
+                    bookmarks = self.dataset["bookmarks"]
+                    self.smart_search.add_texts_to_index([line.lower() for line in bookmarks.values()])
+                    self.smart_search.write_index(path_db_index)
 
             if "content" not in self.dataset:
                 self.dataset["content"] = dict()
