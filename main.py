@@ -9,7 +9,7 @@ from fastapi import FastAPI, Request, Depends, Query, Body
 from fastapi.middleware.cors import CORSMiddleware
 from server import authentication_api
 from server.authentication_api import get_current_user_header
-from server.extension_utils import save_new_item, save_new_bookmark, create_dataset_json
+from server.extension_utils import Db_json
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from bs4 import BeautifulSoup
@@ -20,8 +20,9 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
 )
 
-
 load_dotenv(override=True)
+
+db_json = Db_json()
 
 config = Config("server/.env")
 API_PORT = config.get("API_PORT", default="8001")
@@ -69,6 +70,7 @@ class SelectionData(BaseModel):
 
 @app.post("/save-selection")
 async def save_selection(data: SelectionData, current_user: dict = Depends(get_current_user_header)):
+    global db_json
 
     user_email = current_user.get("user_email")
 
@@ -89,7 +91,7 @@ async def save_selection(data: SelectionData, current_user: dict = Depends(get_c
         summary = " ".join(all_items)
         all_items.append(summary)
 
-    save_new_item(user_email, data.url, all_items)
+    db_json.save_new_item(user_email, data.url, all_items)
 
     #print(f"Extracted Text:\n{all_text}")
 
@@ -108,6 +110,8 @@ class HtmlPage(BaseModel):
 
 @app.post("/parse-save-page")
 async def parse_save_page(data: HtmlPage, current_user: dict = Depends(get_current_user_header)):
+    global db_json
+
     url = data.url.strip('/')
     print(f"Received URL: {url}")
 
@@ -119,7 +123,7 @@ async def parse_save_page(data: HtmlPage, current_user: dict = Depends(get_curre
     logger.info(f"item_list.sz={len(item_list)}")
     logger.info(item_list)
 
-    save_new_item(current_user.get("user_email"), url, item_list)
+    db_json.save_new_item(current_user.get("user_email"), url, item_list)
 
     return {
         "status": "ok",
@@ -134,13 +138,15 @@ class StatusResponse(BaseModel):
 
 @app.post("/add-bookmark-page", response_model=StatusResponse)
 async def add_bookmark_page(data: HtmlPage, current_user: dict = Depends(get_current_user_header)):
+    global db_json
+
     logger.info(f"Received URL: {data.url}")
     logger.info(f"Received user-text: {data.tag_name}")
     logger.info(f"Received title-description: {data.html}")
     description = data.tag_name if data.tag_name else data.html
     logger.info(f"Resulted description: {description}")
 
-    result = save_new_bookmark(current_user.get("user_email"), data.url, description)
+    result = db_json.save_new_bookmark(current_user.get("user_email"), data.url, description)
     if result is not None:
         return JSONResponse(status_code=500, content={"details": f"Bookmark already exists:\n{result}"})
     return JSONResponse(status_code=200, content={"details": "Bookmark added successfully"})
@@ -160,19 +166,21 @@ async def add_selection_tags(data: SelectionTags, current_user: dict = Depends(g
 
 @app.get("/search-ext", response_model=List[str])
 async def search_ext(query: str = Query(...), current_user: dict = Depends(get_current_user_header)):
+    global db_json
 
     logger.info(f"email: {current_user.get('user_email')}, query: {query}")
 
-    data, _ = create_dataset_json(current_user.get('user_email'))
+    data, _ = db_json.create_dataset_json(current_user.get('user_email'))
     content = data["content"]
     return list(content.keys())
 
 
 @app.post("/bookmarks")
 def get_bookmarks(email: str = Body(..., embed=True)):
+    global db_json
 
     logger.info(f"email: {email}")
-    dict_dataset, filepath = create_dataset_json(email)
+    dict_dataset = db_json.create_dataset_json(email)
 
     return JSONResponse(content = {
         "status": "success",
