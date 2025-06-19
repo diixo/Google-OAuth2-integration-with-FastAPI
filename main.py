@@ -170,8 +170,8 @@ async def search_ext(query: str = Query(...), current_user: dict = Depends(get_c
 
     logger.info(f"email: {current_user.get('user_email')}, query: {query}")
 
-    data, _ = db_json.create_dataset_json(current_user.get('user_email'))
-    content = data["content"]
+    dataset = db_json.create_dataset_json(current_user.get('user_email'))
+    content = dataset["content"]
     return list(content.keys())
 
 
@@ -180,11 +180,11 @@ def get_bookmarks(email: str = Body(..., embed=True)):
     global db_json
 
     logger.info(f"email: {email}")
-    dict_dataset = db_json.create_dataset_json(email)
+    dataset = db_json.create_dataset_json(email)
 
     return JSONResponse(content = {
         "status": "success",
-        "bookmarks": dict_dataset.get("bookmarks", dict())
+        "bookmarks": dataset.get("bookmarks", dict())
         },
         status_code=200
     )

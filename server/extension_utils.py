@@ -35,14 +35,20 @@ class Db_json:
                 fd = open(filepath, 'r', encoding='utf-8')
                 self.dataset = json.load(fd)
 
+                if self.smart_search is None:
+                    self.smart_search = SmartSearch()
+
                 # handling bookmarks to smart-search index
                 if Path(path_db_index).exists():
+                    logger.info("smart_search.open -->>")
                     self.smart_search.open_file(path_db_index)
+                    logger.info("smart_search.open <<--")
                 else:
                     logger.info("smart-search index >>")
                     bookmarks = self.dataset["bookmarks"]
                     self.smart_search.add_texts_to_index([line.lower() for line in bookmarks.values()])
                     self.smart_search.write_index(path_db_index)
+                    logger.info("smart-search index <<")
 
             if "content" not in self.dataset:
                 self.dataset["content"] = dict()
@@ -63,9 +69,7 @@ class Db_json:
 
         if REDIRECT_URL.find("http://127.0.0.1") >= 0 or user_email is None:
             filepath = filepath + "debug.json"
-            self.smart_search = SmartSearch()
             self.open_dataset(filepath)
-            logger.info("smart-search")
         else:
             #UUID4 = (8,4,4,4,12)
             secret_bias_namespace = uuid.UUID("22401260-2000-1125-2080-117021601215")
