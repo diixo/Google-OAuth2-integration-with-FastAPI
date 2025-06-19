@@ -48,26 +48,6 @@
    </form>
    </section>
    <!---->
-   
-   {% if search_result %}
-   <div class="mt-2 p-3 bg-body">
-      <h6 class="border-bottom pb-2 mb-0 text-center fs-6 text-dark fw-bold">Channels ({{results_amount}})</h6>
-      {% for product_item in search_result %}
-      <div class="d-flex text-muted border-bottom pt-3">
-
-      <a href="{{product_item.url}}" class="channel-placeholder rounded-2 me-3 fs-4 theme-blue-bg">
-         <i class="bi bi-hurricane text-white"></i>
-      </a>
-      <div class="col pb-2">
-         <p class="pb-1 mb-0 ">
-            <strong class="d-block text-gray-dark">@{{product_item.name}}</strong>
-            {{product_item.description}}
-         </p>
-      </div>
-      </div>
-      {% endfor %}
-   </div>
-   {% endif %}
 
 </div>
 
@@ -99,9 +79,9 @@
     </div>
 
     <a href="{{ item.url }}" class="text-decoration-none">
-      <h5 class="fw-bold mb-2 lh-base">{{ item.heading }}</h5>
+      <h5 class="fw-bold mb-2 lh-base">{{ item.description }}</h5>
     </a>
-    <p class="mb-2 md-16 text-dark">{{ item.description }}</p>
+
     <h6 class="theme-blue-text">distance = {{item.distance}}</h6>
 
 </div>

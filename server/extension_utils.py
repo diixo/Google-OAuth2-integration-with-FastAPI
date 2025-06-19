@@ -5,6 +5,10 @@ import logging as logger
 from pathlib import Path
 from starlette.config import Config
 from server.smart_search import SmartSearch
+from typing import List
+from pydantic import BaseModel
+from urllib.parse import urlparse
+
 
 logging.basicConfig(
     level=logging.INFO,  # Set the default logging level (e.g., DEBUG, INFO, WARNING, ERROR, CRITICAL)
@@ -16,6 +20,16 @@ config = Config("server/.env")
 REDIRECT_URL = config("REDIRECT_URL")
 
 path_db_index = "server/db-storage/db-index.bin"
+
+
+
+class ContentItemModel(BaseModel):
+    url:  str
+    description: str
+    icon_url: str
+    hostname: str
+    distance: str
+    tags: List[str]
 
 
 class Db_json:
@@ -128,3 +142,30 @@ class Db_json:
             with open(self.filepath, 'w', encoding='utf-8') as fd:
                 json.dump(self.dataset, fd, ensure_ascii=False, indent=2)
         return None
+
+
+    def search(self, query_text: str):
+        self.create_dataset_json(user_email=None)
+
+        bookmarks = self.dataset.get("bookmarks", dict())
+        bookmarks = list(bookmarks.items())
+
+        result = []
+        indices, distances = self.smart_search.search(query_text, k=20)
+
+        for id in range(len(indices)):
+            url, description = bookmarks[indices[id]]
+
+            host = urlparse(url.strip('/'))
+            hostname = host.hostname
+
+            result.append(ContentItemModel(
+                url     = url,
+                description = description,
+                icon_url = "https://www.google.com/s2/favicons?domain=" + hostname + "&sz=64",
+                hostname = hostname,
+                distance = f"{distances[id]:.8f}",
+                tags     = []
+            ))
+        logger.info(f"::search results.sz={len(indices)}")
+        return result

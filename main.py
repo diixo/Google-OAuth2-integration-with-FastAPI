@@ -9,7 +9,7 @@ from fastapi import FastAPI, Request, Depends, Query, Body
 from fastapi.middleware.cors import CORSMiddleware
 from server import authentication_api
 from server.authentication_api import get_current_user_header
-from server.extension_utils import Db_json
+from server.extension_utils import Db_json, ContentItemModel
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from bs4 import BeautifulSoup
@@ -188,6 +188,12 @@ def get_bookmarks(email: str = Body(..., embed=True)):
         },
         status_code=200
     )
+
+
+@app.post("/ai-search", response_model=List[ContentItemModel])
+async def ai_search(str_request: str = Body(..., embed=True)):
+    global db_json
+    return db_json.search(str_request)
 
 
 if __name__ == "__main__":

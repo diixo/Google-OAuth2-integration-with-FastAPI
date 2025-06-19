@@ -51,7 +51,7 @@ def ai_search(request):
             if query:
                 result = api.ai_search(query)
                 results_amount = str(len(result)) if result is not None else "0"
-                print(f"ai_search query:{query}, result.sz={results_amount}")
+                logger.info(f"ai_search query:[\"{query}\"]")
 
     return render(request, "app_main/ai-search.html", context={
         "title": "Viix Search engine powered by AI",
