@@ -23,7 +23,7 @@ class Db_json:
     def __init__(self):
         self.dataset = None
         self.filepath = None
-        self.smart_search = None
+        self.smart_search = SmartSearch()
 
 
     def open_dataset(self, filepath):
@@ -34,9 +34,6 @@ class Db_json:
             if Path(filepath).exists():
                 fd = open(filepath, 'r', encoding='utf-8')
                 self.dataset = json.load(fd)
-
-                if self.smart_search is None:
-                    self.smart_search = SmartSearch()
 
                 # handling bookmarks to smart-search index
                 if Path(path_db_index).exists():

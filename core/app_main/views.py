@@ -17,7 +17,7 @@ def get_bookmarks_from_fastapi(email: str) -> dict:
     if response.status_code == 200:
         data = response.json()
         result = data["bookmarks"]
-        print("Bookmarks.sz=", len(result))
+        #print("Bookmarks.sz=", len(result))
     else:
         print("Error.status:", response.status_code)
     return result
