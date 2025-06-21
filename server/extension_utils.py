@@ -162,7 +162,7 @@ class Db_json:
             result.append(ContentItemModel(
                 url     = url,
                 description = description,
-                icon_url = "https://www.google.com/s2/favicons?domain=" + hostname + "&sz=64",
+                icon_url = "https://www.google.com/s2/favicons?domain=" + hostname + "&sz=32",
                 hostname = hostname,
                 distance = f"{distances[id]:.8f}",
                 tags     = []
